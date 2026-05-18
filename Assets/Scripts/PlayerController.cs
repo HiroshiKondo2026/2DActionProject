@@ -2,18 +2,64 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Rigidbody2Dを保存する変数
+    // Rigidbody2D
     private Rigidbody2D rb;
 
-    // 移動入力値
+    // 左右入力
     private float moveInput;
 
     // 移動速度
     [SerializeField]
     private float moveSpeed = 5f;
 
-    // プレイヤーが右向きかどうか
+    // ジャンプ力
+    [SerializeField]
+    private float jumpPower = 12f;
+
+    // 右向き判定
     private bool isFacingRight = true;
+
+    // 接地判定
+    private bool isGrounded;
+
+    // 現在のジャンプ回数
+    private int jumpCount = 0;
+
+    // 最大ジャンプ回数
+    [SerializeField]
+    private int maxJumpCount = 2;
+
+    // GroundCheck位置
+    [SerializeField]
+    private Transform groundCheck;
+
+    // Ground判定半径
+    [SerializeField]
+    private float groundCheckRadius = 0.2f;
+
+    // GroundLayer
+    [SerializeField]
+    private LayerMask groundLayer;
+
+    // 攻撃判定位置
+    [SerializeField]
+    private Transform attackPoint;
+
+    // 攻撃範囲
+    [SerializeField]
+    private float attackRadius = 1f;
+
+    // 敵Layer
+    [SerializeField]
+    private LayerMask enemyLayer;
+
+    // デバッグ用攻撃Gizmo表示フラグ
+    private bool isAttackGizmoVisible = false;
+
+    // Gizmo表示時間
+    [SerializeField]
+    private float attackGizmoDuration = 0.2f;
+
 
     // ゲーム開始時に最初に呼ばれる
     private void Awake()
@@ -26,18 +72,78 @@ public class PlayerController : MonoBehaviour
     // 入力取得を行う
     private void Update()
     {
-        // 左右入力取得
+        // 左右入力 いったん旧入力システムで
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // 向き変更処理
+        // 接地判定
+        CheckGround();
+
+        // 向き変更
         Flip();
+
+        // ジャンプ入力
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            Debug.Log(jumpCount);
+            // 最大回数未満ならジャンプ可能
+            if (jumpCount < maxJumpCount)
+            {
+                Jump();
+            }
+        }
+
+        // 攻撃入力
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Attack();
+        }
     }
 
     // 物理演算用
     private void FixedUpdate()
     {
-        // 現在のY速度を保持しながらX方向へ移動
+        // 左右移動
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+    }
+
+    // ジャンプ処理    
+    private void Jump()
+    {
+        Debug.Log("ジャンプ入力したよ");
+        // Y方向速度リセット
+        // 落下中でも一定ジャンプ力になる
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+
+        // ジャンプ力を加える
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
+
+        // ジャンプ回数加算
+        jumpCount++;
+    }
+    private void CheckGround()
+    {
+        // 接地判定
+        bool wasGrounded = isGrounded;
+
+        //GroundCheck位置をPCの足元中心から円を作って、その円の範囲にGroundLayerが触れているか調べている
+        isGrounded = Physics2D.OverlapCircle(
+            groundCheck.position,
+            groundCheckRadius,
+            groundLayer
+        );
+
+        // 空中→接地になった瞬間
+        if (!wasGrounded && isGrounded)
+        {
+            ResetJumpCount();
+            Debug.Log(jumpCount);//リセット処理入ったかの確認
+        }
+    }
+
+    // ジャンプ回数リセット
+    private void ResetJumpCount()
+    {
+        jumpCount = 0;
     }
 
     // キャラクターの向きを変更する
@@ -70,5 +176,70 @@ public class PlayerController : MonoBehaviour
 
         // Scale適用
         transform.localScale = scale;
+    }
+
+    // Scene上でGroundCheck確認用
+    private void OnDrawGizmosSelected()
+    {
+        // GroundCheck未設定なら終了
+        if (groundCheck == null || attackPoint == null)
+        {
+            return;
+        }
+
+        // Gizmo色
+        Gizmos.color = Color.red;
+
+        // 円表示
+        Gizmos.DrawWireSphere(
+            groundCheck.position,
+            groundCheckRadius
+        );
+
+        // 攻撃Gizmo表示中のみ
+        if (isAttackGizmoVisible)
+        {
+            // 攻撃範囲色
+            Gizmos.color = Color.blue;
+
+            // 攻撃範囲表示
+            Gizmos.DrawWireSphere(
+                attackPoint.position,
+                attackRadius
+            );
+        }
+    }
+
+    // 攻撃処理    
+    private void Attack()
+    {
+        // 攻撃Gizmo表示開始
+        StartCoroutine(ShowAttackGizmo());
+
+        // 攻撃範囲内のEnemy取得
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+            attackPoint.position,
+            attackRadius,
+            enemyLayer
+        );
+
+        // Enemy全処理
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            Debug.Log(enemy.name + " に攻撃ヒット！");
+        }
+    }
+
+    // 一定時間だけ攻撃Gizmo表示
+    private System.Collections.IEnumerator ShowAttackGizmo()
+    {
+        // 表示ON
+        isAttackGizmoVisible = true;
+
+        // 指定時間待機
+        yield return new WaitForSeconds(attackGizmoDuration);
+
+        // 表示OFF
+        isAttackGizmoVisible = false;
     }
 }
