@@ -228,7 +228,15 @@ public class PlayerController : MonoBehaviour
         // Enemy全処理
         foreach (Collider2D enemy in hitEnemies)
         {
-            Debug.Log(enemy.name + " に攻撃ヒット！");
+            // EnemyHealth取得
+            EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+
+            // EnemyHealthが存在するなら
+            if (enemyHealth != null)
+            {
+                // ダメージを与える
+                enemyHealth.TakeDamage(1);
+            }
         }
     }
 
