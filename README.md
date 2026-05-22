@@ -119,8 +119,8 @@
 |------|-----------|------|------------------|
 | 5/18 | 企画概要、仕様のまとめ、Unityの基本対応とGit作成 | 一通り完了してPC操作実装に取り掛かり中 | 6h |
 | 5/19 | 足場実装とPCの基本操作の実装 | PC操作仮組、ザコ敵のAI作成、ザコ敵の攻撃判定作成 | 6h|
-| 5/22 | ザコ敵の実装と、キャラアクションの実装| PCの攻撃アニメーション対応 | |
-| 5/22 | マップ作成、マップ(Scene遷移)と足場、階段実装| | |
+| 5/21 | ザコ敵の実装と、キャラアクションの実装| PCの攻撃アニメーション対応 | 6h|
+| 5/22 | マップ作成、マップ(Scene遷移)と足場、階段実装| 足場のグラフィック設定、Composite Colliderの作成| 6h|
 | ... | ... | ... | ... |
 
 > ※ **毎日、最低1行は更新**してください。  
@@ -134,6 +134,7 @@
 |------|-----------|----------|----------|------|
 | 5/21 | Asset 'PlayerAnimator': Transition 'Player_Attack1 -> Play_Idle' in state 'Player_Attack1' doesn't have an Exit Time or any condition, transition will be ignored UnityEditor.EditorApplication:Internal_RestoreLastOpenedScenes () | Animator | Attack1からIdleに戻る場合の条件指定ミスだったのでHasExitTimeの設定削除 | |
 | 5/21| Player' AnimationEvent has no function name specified!| Animator | Timelineに余計なAnimationEventの指定が入っていたので削除した||
+| 5/22| MissingReferenceException | TilePalleteへ画像を追加したり削除などをしていたらエラーが出るようになっていたので、古いParetteとLibralyの削除から再起動で修正||
 | ... | ... | ... | ... | ... |
 
 > ※ エラーが出たら記録してください。暫定対応と「後で見直す点」も書いて OK です。
