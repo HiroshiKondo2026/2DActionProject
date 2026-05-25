@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
     // Ground判定半径
     [SerializeField]
-    private float groundCheckRadius = 0.2f;
+    private float groundCheckRadius = 0.35f;
 
     // GroundLayer
     [SerializeField]
@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
 
     // 攻撃範囲
     [SerializeField]
-    private float attackRadius = 1f;
+    private float attackRadius = 5f;
 
     [SerializeField]
     private int attackDM = 1;

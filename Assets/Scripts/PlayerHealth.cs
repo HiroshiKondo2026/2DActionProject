@@ -22,10 +22,14 @@ public class PlayerHealth : MonoBehaviour
 
     // ノックバック力
     [SerializeField]
-    private float knockbackPower = 15f;
+    private float knockbackPower = 1f;
 
     // ノックバック中
     public bool IsKnockback { get; private set; }
+
+    //ノックバックを短時間だけ発生
+    [SerializeField]
+    private float knockbackDuration = 0.15f;
 
     // SpriteRenderer
     private SpriteRenderer spriteRenderer;
@@ -77,13 +81,18 @@ public class PlayerHealth : MonoBehaviour
 
         // ノックバック方向計算
         //normalizedすると 長さ1 になる＝方向の+-が定まる
-        Vector2 knockbackDirection = (transform.position - (Vector3)enemyPosition).normalized;
+        // 敵が左右どちらにいるか判定
+        float direction = Mathf.Sign(transform.position.x - enemyPosition.x);
+
+        // 横方向だけノックバック
+        Vector2 knockbackDirection = new Vector2(direction, 0.2f).normalized;
 
         // ノックバック状態に切替
         IsKnockback = true;
 
-        // 力を加える　ForceMode2D.Impulse＝瞬間的に強く押す
-        rb.AddForce(knockbackDirection * knockbackPower, ForceMode2D.Impulse);
+        //固定ノックバック
+        StartCoroutine(KnockbackCoroutine(knockbackDirection));
+
 
         StartCoroutine(InvincibleCoroutine());
 
@@ -142,9 +151,6 @@ public class PlayerHealth : MonoBehaviour
         // 無敵OFF
         isInvincible = false;
 
-        // ノックバック終了
-        IsKnockback = false;
-
         Debug.Log("無敵終了");
     }
 
@@ -153,5 +159,23 @@ public class PlayerHealth : MonoBehaviour
     {
         // HPテキスト更新
         hpText.text = "HP : " + currentHP;
+    }
+
+    private System.Collections.IEnumerator KnockbackCoroutine(Vector2 direction)
+    {
+        // ノックバック開始
+        IsKnockback = true;
+
+        // ノックバック速度
+        rb.linearVelocity = direction * knockbackPower;
+
+        // 少しだけ吹っ飛ぶ
+        yield return new WaitForSeconds(knockbackDuration);
+
+        // 停止
+        rb.linearVelocity = Vector2.zero;
+
+        // ノックバック終了
+        IsKnockback = false;
     }
 }

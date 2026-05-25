@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class EnemyHealth : MonoBehaviour
 {
     // 最大HP
@@ -167,7 +167,15 @@ public class EnemyHealth : MonoBehaviour
             yield return new WaitForSeconds(0.08f);
         }
 
-        // 最後に削除
-        Destroy(gameObject);
+        // LargeEnemyならクリア画面へ
+        if (gameObject.name.Contains("LargeEnemy"))
+        {
+            SceneManager.LoadScene("ClearScene");
+        }
+        else
+        {
+            // 通常Enemyは削除
+            Destroy(gameObject);
+        }
     }
 }
