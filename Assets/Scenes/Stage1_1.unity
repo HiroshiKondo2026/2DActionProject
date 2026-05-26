@@ -1807,8 +1807,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: HP 5
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e95752d8b86644648831aafaafa230f1, type: 2}
+  m_sharedMaterial: {fileID: 6077281641628068983, guid: e95752d8b86644648831aafaafa230f1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
