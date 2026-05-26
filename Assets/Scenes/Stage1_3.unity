@@ -1125,6 +1125,7 @@ MonoBehaviour:
   knockbackPower: 7
   knockbackDuration: 0.15
   blinkInterval: 0.05
+  fallDeathY: -10
   hpText: {fileID: 1187590930}
   deathKnockbackPower: 12
   deathUpPower: 6

@@ -129,14 +129,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // 攻撃入力
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            //コンボ段階管理　アニメ再生メソッドを呼ぶ
+            // コンボ管理とアニメ再生
             HandleAttackInput();
+
             Debug.Log("攻撃開始");
             Debug.Log("現在コンボ段数：" + comboStep);
-            Attack();
         }
     }
 
@@ -285,7 +284,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 攻撃処理    
-    private void Attack()
+    public void Attack()
     {
         Debug.Log("アタック！");
         // 攻撃Gizmo表示開始
@@ -358,9 +357,6 @@ public class PlayerController : MonoBehaviour
 
         // 一定時間後に解除
         StartCoroutine(AttackCoroutine());
-
-        // 実際の攻撃判定はここで呼ぶ（今までの処理流用）
-        Attack();
     }
 
     // 攻撃状態を一定時間だけ維持
