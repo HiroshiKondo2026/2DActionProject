@@ -31,6 +31,9 @@ public class PlayerController : MonoBehaviour
     // 攻撃中判定
     private bool isAttacking = false;
 
+    // 次コンボへ進めるか
+    private bool canNextCombo = false;
+
     // 攻撃継続時間
     [SerializeField]
     private float attackDuration = 0.3f;
@@ -129,10 +132,23 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // 攻撃入力
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            // コンボ管理とアニメ再生
-            HandleAttackInput();
+            // 攻撃中でないならAttack1開始
+            if (!isAttacking)
+            {
+                HandleAttackInput();
+            }
+
+            // 攻撃中なら、次段受付時のみ許可
+            else if (canNextCombo)
+            {
+                HandleAttackInput();
+
+                // 連続入力防止
+                canNextCombo = false;
+            }
 
             Debug.Log("攻撃開始");
             Debug.Log("現在コンボ段数：" + comboStep);
@@ -367,5 +383,14 @@ public class PlayerController : MonoBehaviour
 
         // 攻撃状態OFF
         isAttacking = false;
+    }
+
+    // 次コンボ入力を許可する
+    // Animation Event から呼ばれる
+    public void EnableNextCombo()
+    {
+        canNextCombo = true;
+
+        Debug.Log("次コンボ受付開始");
     }
 }
