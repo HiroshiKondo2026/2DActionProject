@@ -155,10 +155,14 @@
 - **フォルダ構成（推奨）**
 ```
 Assets/
+├─ Animations
 ├─ Scripts/
 ├─ Prefabs/
 ├─ Scenes/
+├─ Sprites/
 ├─ UI/
+├─ TilePalette
+├─ Tiles
 └─ Audio/
 ```
 
