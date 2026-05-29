@@ -80,6 +80,14 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float knockbackForce = 5f;
 
+    // ProjectilePrefab
+    [SerializeField]
+    private BossProjectile projectilePrefab;
+
+    // 発射位置
+    [SerializeField]
+    private Transform firePoint;
+
     // 初期化
     private void Awake()
     {
@@ -170,6 +178,11 @@ public class EnemyAI : MonoBehaviour
 
         // Animatorへ移動状態を送る
         animator.SetBool("isMoving", isMoving);
+        //仮処置テスト用
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            FireProjectile();
+        }
 
     }
 
@@ -273,12 +286,24 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
-
     // 攻撃終了
     // Animation Eventから呼ばれる
     public void EndAttack()
     {
         // 攻撃中OFF
         isAttacking = false;
+    }
+
+    // Projectile発射
+    private void FireProjectile()
+    {
+        // 向き方向
+        Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
+
+        // Projectile生成
+        BossProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+
+        // 発射方向設定
+        projectile.SetDirection(direction);
     }
 }
