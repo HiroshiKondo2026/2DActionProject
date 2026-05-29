@@ -103,12 +103,12 @@ TextureImporter:
       name: BossAttack1_2_0
       rect:
         serializedVersion: 2
-        x: 85
-        y: 24
-        width: 237
-        height: 140
+        x: 29
+        y: 21
+        width: 247
+        height: 145
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 560cd2f20db6e424eae96208898c5b5d
     internalID: 0
     vertices: []
     indices: 

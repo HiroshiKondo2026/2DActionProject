@@ -25,9 +25,30 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float chaseDistance = 5f;
 
-    // 攻撃開始距離
+    // =========================
+    // 近接攻撃設定
+    // =========================
+
+    // 近接攻撃距離
     [SerializeField]
-    private float attackDistance = 1.5f;
+    private float meleeAttackDistance = 1.5f;
+
+    // =========================
+    // 遠距離攻撃設定
+    // =========================
+
+    // 飛び道具攻撃距離
+    [SerializeField]
+    private float rangedAttackDistance = 6f;
+
+    // 飛び道具攻撃間隔
+    [SerializeField]
+    private float rangedAttackCooldown = 3f;
+
+    // 次回飛び道具攻撃可能時間
+    private float nextRangedAttackTime;
+
+
 
     // 次攻撃までの間隔
     [SerializeField]
@@ -131,13 +152,48 @@ public class EnemyAI : MonoBehaviour
         float moveDirection;
 
         // 攻撃距離内なら停止
-        if (distance <= attackDistance)
+        if (distance <= meleeAttackDistance)
         {
             // 移動停止
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
             // 攻撃可能なら攻撃
             if (Time.time >= nextAttackTime) Attack();
+
+            return;
+        }
+
+        // =========================
+        // 飛び道具攻撃距離
+        // =========================
+
+        if (distance <= rangedAttackDistance)
+        {
+            // 移動停止
+            rb.linearVelocity =
+                new Vector2(0, rb.linearVelocity.y);
+
+            // Player方向確認
+            float targetDirection =
+                playerTransform.position.x >
+                transform.position.x ? 1f : -1f;
+
+            // 向き違うなら反転
+            if ((targetDirection > 0 && !isFacingRight)
+                || (targetDirection < 0 && isFacingRight))
+            {
+                Flip();
+            }
+
+            // 飛び道具攻撃可能なら発射
+            if (Time.time >= nextRangedAttackTime)
+            {
+                FireProjectile();
+
+                // 次回発射時間更新
+                nextRangedAttackTime =
+                    Time.time + rangedAttackCooldown;
+            }
 
             return;
         }
@@ -261,6 +317,33 @@ public class EnemyAI : MonoBehaviour
 
         // 攻撃範囲表示
         Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
+
+        // wallCheck確認
+        if (wallCheck != null)
+        {
+            Gizmos.color = Color.blue;
+
+            Vector2 direction =
+                isFacingRight ? Vector2.right : Vector2.left;
+
+            Gizmos.DrawLine(
+                wallCheck.position,
+                (Vector2)wallCheck.position +
+                direction * checkDistance
+            );
+        }
+
+        // groundCheck確認
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.green;
+
+            Gizmos.DrawLine(
+                groundCheck.position,
+                (Vector2)groundCheck.position +
+                Vector2.down * checkDistance
+            );
+        }
     }
 
     // 実際にダメージを与える処理

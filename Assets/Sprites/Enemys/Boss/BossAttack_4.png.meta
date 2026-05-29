@@ -103,12 +103,12 @@ TextureImporter:
       name: BossWalk_2_0
       rect:
         serializedVersion: 2
-        x: 109
-        y: 22
+        x: 5
+        y: 20
         width: 227
         height: 141
       alignment: 9
-      pivot: {x: 0.502501, y: 0.540253}
+      pivot: {x: 0.5050014, y: 0.6127054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

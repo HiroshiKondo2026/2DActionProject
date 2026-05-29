@@ -103,12 +103,12 @@ TextureImporter:
       name: BossIdle2_0
       rect:
         serializedVersion: 2
-        x: 151
-        y: 17
-        width: 204
-        height: 137
+        x: 0
+        y: 23
+        width: 208
+        height: 141
       alignment: 9
-      pivot: {x: 0.41405666, y: 0.57871205}
+      pivot: {x: 0.49045736, y: 0.57871205}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
