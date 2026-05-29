@@ -143,6 +143,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float attackGizmoDuration = 0.2f;
 
+    //Weight負け中移動停止フラグ
+    private bool isBlocked;
+
     // ゲーム開始時に最初に呼ばれる
     private void Awake()
     {
@@ -220,6 +223,8 @@ public class PlayerController : MonoBehaviour
             Debug.Log("攻撃開始");
             Debug.Log("現在コンボ段数：" + comboStep);
         }
+
+
     }
 
     // 物理演算用
@@ -235,6 +240,15 @@ public class PlayerController : MonoBehaviour
         if (isAttacking)
         {
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+
+            return;
+        }
+
+        //Weight負け中は移動停止
+        if (isBlocked)
+        {
+            rb.linearVelocity =
+                new Vector2(0, rb.linearVelocity.y);
 
             return;
         }
@@ -535,5 +549,61 @@ public class PlayerController : MonoBehaviour
         Debug.Log("受付終了");
         Debug.Log("Attack終了");
     }
+    // Enemyと接触中
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // Enemyタグ以外なら終了
+        if (!collision.gameObject.CompareTag("Enemy"))
+        {
+            return;
+        }
 
+        // EnemyAI取得
+        EnemyAI enemyAI =
+            collision.gameObject.GetComponent<EnemyAI>();
+
+        // EnemyAI無ければ終了
+        if (enemyAI == null)
+        {
+            return;
+        }
+
+        // Enemyの重さ取得
+        int enemyWeight = enemyAI.WeightLevel;
+
+        // =========================
+        // 重量2 = Boss級
+        // Playerが押し負ける
+        // =========================
+
+        if (enemyWeight >= 2)
+        {
+            // Player移動停止
+            rb.linearVelocity =
+                new Vector2(
+                    0,
+                    rb.linearVelocity.y
+                );
+        }
+
+        // =========================
+        // 重量1 = 同格
+        // 互いに押せない
+        // =========================
+
+        else if (enemyWeight == 1)
+        {
+            // Player横移動停止
+            rb.linearVelocity =
+                new Vector2(
+                    0,
+                    rb.linearVelocity.y
+                );
+        }
+    }
+
+    public void SetBlocked(bool blocked)
+    {
+        isBlocked = blocked;
+    }
 }

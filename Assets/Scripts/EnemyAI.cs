@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -101,6 +101,27 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float knockbackForce = 5f;
 
+    // =========================
+    // 重量設定
+    // 0 = 軽量
+    // 1 = 同格
+    // 2 = 重量級
+    // =========================
+
+    [SerializeField]
+    private int weightLevel = 0;
+
+    // 外部取得用
+    public int WeightLevel => weightLevel;
+
+    // 重さ
+    // 0 = 軽い
+    // 1 = 拮抗
+    // 2 = 重い(Boss用)
+    [SerializeField]
+    private int enemyWeight = 0;
+
+
     // ProjectilePrefab
     [SerializeField]
     private BossProjectile projectilePrefab;
@@ -125,6 +146,21 @@ public class EnemyAI : MonoBehaviour
         animator = GetComponent<Animator>();
 
         Debug.Log(animator.runtimeAnimatorController.name);
+
+        // FirePoint未設定なら自動取得
+        if (firePoint == null)
+        {
+            firePoint =
+                transform.Find("FirePoint");
+        }
+
+        // 見つからなければ警告
+        if (firePoint == null)
+        {
+            Debug.LogError(
+                gameObject.name +
+                " FirePointが見つからない");
+        }
     }
 
     // 物理更新
@@ -378,15 +414,89 @@ public class EnemyAI : MonoBehaviour
     }
 
     // Projectile発射
+    // Projectile発射
     private void FireProjectile()
     {
+        Debug.Log(gameObject.name);
+
+        // FirePoint未設定なら終了
+        if (firePoint == null)
+        {
+            Debug.LogError("firePointが未設定");
+
+            return;
+        }
+
+        // ProjectilePrefab未設定なら終了
+        if (projectilePrefab == null)
+        {
+            Debug.LogError("projectilePrefabが未設定");
+
+            return;
+        }
+
         // 向き方向
-        Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
+        Vector2 direction =
+            isFacingRight ? Vector2.right : Vector2.left;
 
         // Projectile生成
-        BossProjectile projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        BossProjectile projectile =
+            Instantiate(
+                projectilePrefab,
+                firePoint.position,
+                Quaternion.identity);
 
         // 発射方向設定
         projectile.SetDirection(direction);
+    }
+
+    // Enemyと接触中
+    // 接触中
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // Player以外なら終了
+        if (!collision.gameObject.CompareTag("Player"))
+        {
+            return;
+        }
+
+        // PlayerController取得
+        PlayerController playerController =
+            collision.gameObject.GetComponent<PlayerController>();
+
+        // PlayerController無ければ終了
+        if (playerController == null)
+        {
+            return;
+        }
+
+        // Weight2ならPlayerを止める
+        if (enemyWeight >= 2)
+        {
+            playerController.SetBlocked(true);
+        }
+    }
+
+    // 接触終了
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        // Player以外なら終了
+        if (!collision.gameObject.CompareTag("Player"))
+        {
+            return;
+        }
+
+        // PlayerController取得
+        PlayerController playerController =
+            collision.gameObject.GetComponent<PlayerController>();
+
+        // 無ければ終了
+        if (playerController == null)
+        {
+            return;
+        }
+
+        // 停止解除
+        playerController.SetBlocked(false);
     }
 }

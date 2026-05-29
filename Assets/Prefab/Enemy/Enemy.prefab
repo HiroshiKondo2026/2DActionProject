@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 4435916279548751840}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -459,7 +459,7 @@ BoxCollider2D:
   m_Offset: {x: -0.015, y: -0.13}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.51, y: 1.22}
+    pivot: {x: 0.50763756, y: 1.3509647}
     oldSize: {x: 0.25, y: 0.23}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -496,11 +496,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   moveSpeed: 2
   chaseDistance: 5
-  attackDistance: 1
+  meleeAttackDistance: 1.5
+  rangedAttackDistance: 6
+  rangedAttackCooldown: 3
   attackCooldown: 2
   attackPoint: {fileID: 8977949324638530059}
   attackRadius: 0.4
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  wallCheck: {fileID: 0}
+  groundCheck: {fileID: 0}
+  checkDistance: 0.3
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   attackDamage: 1
+  knockbackForce: 5
+  weightLevel: 0
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}

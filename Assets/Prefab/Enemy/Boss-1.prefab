@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2177962240194680311}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: -0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 2428110606810519369}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.056599, y: -0.5496835, z: 0}
+  m_LocalPosition: {x: 1, y: 0.1, z: 0}
   m_LocalScale: {x: 0.24000001, y: 0.24000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 5000552218476298777}
   m_Layer: 6
   m_Name: Boss-1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -326,7 +326,7 @@ MonoBehaviour:
   moveSpeed: 1
   chaseDistance: 5
   meleeAttackDistance: 1.8
-  rangedAttackDistance: 6
+  rangedAttackDistance: 10
   rangedAttackCooldown: 2.5
   attackCooldown: 2
   attackPoint: {fileID: 8977949324638530059}
@@ -336,12 +336,13 @@ MonoBehaviour:
     m_Bits: 128
   wallCheck: {fileID: 1499674319430875639}
   groundCheck: {fileID: 7851631338989123890}
-  checkDistance: 1.2
+  checkDistance: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   attackDamage: 3
   knockbackForce: 8
+  weightLevel: 2
   projectilePrefab: {fileID: -5110534461669590181, guid: 2caac582ad8794d42a32f53bc18eca73, type: 3}
   firePoint: {fileID: 1587529983598547597}
 --- !u!95 &5000552218476298777

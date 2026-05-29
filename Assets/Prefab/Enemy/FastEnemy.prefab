@@ -376,7 +376,7 @@ GameObject:
   - component: {fileID: 4435916279548751840}
   m_Layer: 6
   m_Name: FastEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -560,7 +560,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   moveSpeed: 6
   chaseDistance: 5
-  attackDistance: 1.4
+  meleeAttackDistance: 1.5
+  rangedAttackDistance: 6
+  rangedAttackCooldown: 3
   attackCooldown: 2
   attackPoint: {fileID: 8977949324638530059}
   attackRadius: 0.5
@@ -574,3 +576,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   attackDamage: 1
+  knockbackForce: 5
+  weightLevel: 0
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}
