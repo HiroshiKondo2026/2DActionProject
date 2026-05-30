@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 2428110606810519369}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0.944, y: -0.264, z: 0}
   m_LocalScale: {x: 0.24000001, y: 0.24000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -325,8 +325,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   moveSpeed: 1
   chaseDistance: 5
-  meleeAttackDistance: 1.8
-  rangedAttackDistance: 10
+  meleeAttackDistance: 6
+  rangedAttackDistance: 12
   rangedAttackCooldown: 2.5
   attackCooldown: 2
   attackPoint: {fileID: 8977949324638530059}

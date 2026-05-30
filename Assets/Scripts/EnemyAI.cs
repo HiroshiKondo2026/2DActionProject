@@ -176,6 +176,8 @@ public class EnemyAI : MonoBehaviour
         // Playerとの距離 Enemyの位置とPlayerの位置を測って入れる
         float distance = Vector2.Distance(transform.position, playerTransform.position);
 
+        Debug.Log("距離 : " + distance);
+
         // 移動方向
         float moveDirection;
 
@@ -213,12 +215,16 @@ public class EnemyAI : MonoBehaviour
                 Flip();
             }
 
-            // 飛び道具攻撃可能なら発射
+            // 飛び道具攻撃可能なら攻撃開始
             if (Time.time >= nextRangedAttackTime)
             {
-                FireProjectile();
+                // 攻撃中状態
+                isAttacking = true;
 
-                // 次回発射時間更新
+                // 遠距離攻撃アニメ開始
+                animator.SetTrigger("RangedAttack");
+
+                // 次回攻撃時間更新
                 nextRangedAttackTime =
                     Time.time + rangedAttackCooldown;
             }
@@ -324,6 +330,8 @@ public class EnemyAI : MonoBehaviour
     // 攻撃処理
     private void Attack()
     {
+        Debug.Log("近接攻撃開始");
+
         // 攻撃中ON
         isAttacking = true;
 
@@ -405,9 +413,8 @@ public class EnemyAI : MonoBehaviour
         isAttacking = false;
     }
 
-    // Projectile発射
-    // Projectile発射
-    private void FireProjectile()
+     // Projectile発射
+    public void FireProjectile()
     {
         Debug.Log(gameObject.name);
 
