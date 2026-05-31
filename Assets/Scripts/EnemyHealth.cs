@@ -167,8 +167,8 @@ public class EnemyHealth : MonoBehaviour
             yield return new WaitForSeconds(0.08f);
         }
 
-        // LargeEnemyならクリア画面へ
-        if (gameObject.name.Contains("LargeEnemy"))
+        // Boss-1ならクリア画面へ
+        if (gameObject.name.Contains("Boss-1"))
         {
             SceneManager.LoadScene("ClearScene");
         }
