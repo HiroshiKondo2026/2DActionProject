@@ -669,7 +669,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 2.5
+  m_GravityScale: 2.7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -755,6 +755,7 @@ MonoBehaviour:
   alwaysShowAttackGizmo: 1
   attackGizmoDuration: 0.2
   maxFallSpeed: 12
+  startFacingRight: 1
 --- !u!114 &2237189157722497506
 MonoBehaviour:
   m_ObjectHideFlags: 0
