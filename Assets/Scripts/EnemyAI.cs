@@ -142,6 +142,10 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float retreatSpeed = 3f;
 
+    // 後退方向の地面確認位置
+    [SerializeField]
+    private Transform retreatGroundCheck;
+
     // 初期化
     private void Awake()
     {
@@ -192,16 +196,32 @@ public class EnemyAI : MonoBehaviour
         float distance = Vector2.Distance(transform.position, playerTransform.position);
 
         Debug.Log("距離 : " + distance);
-        Debug.Log( gameObject.name + " isRetreating = " + isRetreating);
+        Debug.Log(gameObject.name + " isRetreating = " + isRetreating);
 
         // 後退中はPlayerと逆方向へ移動し、Player方向は向き続ける
         if (isRetreating)
         {
+            // 後退方向に壁や崖があれば後退終了
+            if (CheckRetreatObstacle())
+            {
+                Debug.Log(gameObject.name + " 後退終了");
+
+                isRetreating = false;
+
+                // 横移動停止
+                rb.linearVelocity =
+                    new Vector2(
+                        0,
+                        rb.linearVelocity.y);
+
+                return;
+            }
+
             // Playerと逆方向へ移動
             float retreatDirection = playerTransform.position.x > transform.position.x ? -1f : 1f;
 
             // 移動
-            rb.linearVelocity =new Vector2(retreatDirection * retreatSpeed,rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(retreatDirection * retreatSpeed, rb.linearVelocity.y);
 
             // Player方向は向き続ける
             float targetDirection = playerTransform.position.x > transform.position.x ? 1f : -1f;
@@ -350,6 +370,46 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 後退方向に壁や崖があるか確認する
+    /// true なら後退を終了する
+    /// </summary>
+    private bool CheckRetreatObstacle()
+    {
+        // 後退方向を決定
+        // Playerが右にいるなら左へ後退
+        // Playerが左にいるなら右へ後退
+        Vector2 retreatDirection =
+            playerTransform.position.x > transform.position.x
+            ? Vector2.left
+            : Vector2.right;
+
+        // 後退方向の壁確認
+        RaycastHit2D wallHit =
+            Physics2D.Raycast(
+                wallCheck.position,
+                retreatDirection,
+                checkDistance,
+                groundLayer);
+
+        // 後退方向の地面確認
+        RaycastHit2D groundHit =
+            Physics2D.Raycast(
+                retreatGroundCheck.position,
+                Vector2.down,
+                checkDistance,
+                groundLayer);
+
+        // 壁に当たったか
+        bool hitWall = wallHit.collider != null;
+
+        // 地面が無いか
+        bool noGround = groundHit.collider == null;
+
+        // 壁または崖ならtrue
+        return hitWall || noGround;
+    }
+
     // 向き変更
     private void Flip()
     {
@@ -401,7 +461,7 @@ public class EnemyAI : MonoBehaviour
             // 現在向いている方向を決める
             Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
             // Rayを表示
-            Gizmos.DrawLine( wallCheck.position, (Vector2)wallCheck.position + direction * checkDistance);
+            Gizmos.DrawLine(wallCheck.position, (Vector2)wallCheck.position + direction * checkDistance);
         }
 
         // groundCheck確認
@@ -410,7 +470,7 @@ public class EnemyAI : MonoBehaviour
             // 表示色は緑
             Gizmos.color = Color.green;
             // Rayを表示
-            Gizmos.DrawLine( groundCheck.position, (Vector2)groundCheck.position + Vector2.down * checkDistance);
+            Gizmos.DrawLine(groundCheck.position, (Vector2)groundCheck.position + Vector2.down * checkDistance);
         }
     }
 
@@ -491,7 +551,7 @@ public class EnemyAI : MonoBehaviour
         {
             // Player停止
             playerController.SetBlocked(true);
-        }    
+        }
     }
 
     // 接触終了
