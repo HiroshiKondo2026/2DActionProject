@@ -4971,26 +4971,6 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: 61, y: 1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 0
-      m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 1
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: 62, y: 1, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 0
-      m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 1
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
   - first: {x: 63, y: 1, z: 0}
     second:
       serializedVersion: 2
@@ -7103,10 +7083,10 @@ Tilemap:
       m_AllTileFlags: 1073741825
   m_AnimatedTiles: {}
   m_TileAssetArray:
-  - m_RefCount: 464
+  - m_RefCount: 462
     m_Data: {fileID: 11400000, guid: ca7c3f81f6db7034cbb3295be9354ba9, type: 2}
   m_TileSpriteArray:
-  - m_RefCount: 464
+  - m_RefCount: 462
     m_Data: {fileID: 21300000, guid: 1ee864c5fa47c644d82c84936993a149, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 271
@@ -7127,7 +7107,7 @@ Tilemap:
       e31: 0
       e32: 0
       e33: 1
-  - m_RefCount: 193
+  - m_RefCount: 191
     m_Data:
       e00: -1
       e01: 0
@@ -7146,7 +7126,7 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 464
+  - m_RefCount: 462
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -7328,12 +7308,8 @@ CompositeCollider2D:
         Y: 30000000
       - X: 650000000
         Y: 20000000
-      - X: 610000000
-        Y: 20000000
-      - X: 610000000
-        Y: 10000000
       - X: 630000000
-        Y: 10000000
+        Y: 20000000
       - X: 630000000
         Y: 0
       - X: 670000000
@@ -7618,9 +7594,7 @@ CompositeCollider2D:
       - {x: 65.99997, y: 3}
       - {x: 65, y: 2.999971}
       - {x: 64.99997, y: 2}
-      - {x: 61, y: 1.9999708}
-      - {x: 61.000034, y: 1}
-      - {x: 63, y: 0.9999706}
+      - {x: 63, y: 1.9999708}
       - {x: 63.000034, y: 0}
       - {x: 67, y: 0.000029300001}
       - {x: 67.00003, y: 1}
@@ -7702,6 +7676,10 @@ CompositeCollider2D:
       - {x: 13.00003, y: 14}
       - {x: 21, y: 13.999971}
       - {x: 21.000029, y: 13}
+    - - {x: 63.99997, y: 9}
+      - {x: 63.99997, y: 11}
+      - {x: 63, y: 10.99997}
+      - {x: 63.000034, y: 9}
     - - {x: 22.999971, y: 8}
       - {x: 22.999971, y: 11}
       - {x: 21, y: 10.99997}
@@ -7712,18 +7690,10 @@ CompositeCollider2D:
       - {x: 5.999971, y: 11}
       - {x: 0, y: 10.99997}
       - {x: 0.000029300001, y: 10}
-    - - {x: 63.99997, y: 9}
-      - {x: 63.99997, y: 11}
-      - {x: 63, y: 10.99997}
-      - {x: 63.000034, y: 9}
     - - {x: 39.999973, y: 9}
       - {x: 39.999973, y: 10}
       - {x: 38, y: 9.99997}
       - {x: 38.00003, y: 9}
-    - - {x: 46.999973, y: 8}
-      - {x: 46.999973, y: 9}
-      - {x: 45, y: 8.99997}
-      - {x: 45.00003, y: 8}
     - - {x: 42.999973, y: 6}
       - {x: 42.999973, y: 7}
       - {x: 38, y: 7.0000296}
@@ -7732,6 +7702,10 @@ CompositeCollider2D:
       - {x: 36.999973, y: 8}
       - {x: 36, y: 7.9999704}
       - {x: 36.00003, y: 6}
+    - - {x: 46.999973, y: 8}
+      - {x: 46.999973, y: 9}
+      - {x: 45, y: 8.99997}
+      - {x: 45.00003, y: 8}
     - - {x: 15.999971, y: 5}
       - {x: 15.999971, y: 6}
       - {x: 11, y: 5.999971}
@@ -7913,6 +7887,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2413020961248239642, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 8023756468638791085, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -7920,6 +7898,18 @@ PrefabInstance:
     - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: m_text
       value: "Stage 1-1\n\u300C\u5F85\u3061\u53D7\u3051\u308B\u3082\u306E\u306F\u300D"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: e95752d8b86644648831aafaafa230f1, type: 2}
+    - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6077281641628068983, guid: e95752d8b86644648831aafaafa230f1, type: 2}
+    - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

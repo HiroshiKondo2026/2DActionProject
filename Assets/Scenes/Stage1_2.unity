@@ -3302,9 +3302,25 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2413020961248239642, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: m_text
-      value: "Stage 1-2\n\u300C\u9802\u306F\u3044\u305A\u3053\u300D"
+      value: "Stage 1-2\n\u300C\u9802\u306F\u4F55\u51E6\u300D"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: e95752d8b86644648831aafaafa230f1, type: 2}
+    - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6077281641628068983, guid: e95752d8b86644648831aafaafa230f1, type: 2}
+    - target: {fileID: 8052797485688926327, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
