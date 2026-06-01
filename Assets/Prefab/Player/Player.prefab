@@ -740,17 +740,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 264
   attack1Offset: {x: 0, y: 0}
-  attack1Radius: 1
+  attack1Radius: 1.4
   attack2Offset: {x: 0, y: 0}
-  attack2Radius: 1.2
+  attack2Radius: 1.6
   attack3Offset: {x: 0, y: 0}
-  attack3Radius: 1.5
+  attack3Radius: 1.6
   attackDM: 1
+  attack1Knockback: 1.5
+  attack2Knockback: 2
+  attack3Knockback: 8
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
   alwaysShowAttackGizmo: 1
   attackGizmoDuration: 0.2
+  maxFallSpeed: 12
 --- !u!114 &2237189157722497506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -765,7 +769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHP: 100
   invincibleTime: 1
-  knockbackPower: 15
+  knockbackPower: 10
   knockbackDuration: 0.15
   blinkInterval: 0.05
   fallDeathY: -10

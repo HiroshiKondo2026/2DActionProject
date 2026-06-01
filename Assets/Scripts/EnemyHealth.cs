@@ -52,7 +52,7 @@ public class EnemyHealth : MonoBehaviour
 
     // ダメージ受信
 
-    public void TakeDamage(int damage, Transform attacker)
+    public void TakeDamage(int damage, Transform attacker, float knockbackPower)
     {
         // 死亡中なら処理しない
         if (isDead) return;
@@ -67,7 +67,7 @@ public class EnemyHealth : MonoBehaviour
         IsKnockback = true;
 
         // 左右方向へノックバック Playerの位置との正負方向にノックバックさせる
-        rb.AddForce(new Vector2(direction > 0 ? 1 : -1, 0) * knockbackForce, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(direction > 0 ? 1 : -1, 0) * knockbackPower, ForceMode2D.Impulse);
 
         // ノックバック時間開始
         StartCoroutine(KnockbackCoroutine());

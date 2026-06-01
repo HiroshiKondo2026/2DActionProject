@@ -128,6 +128,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int attackDM = 1;
 
+    // Attack1用ノックバック
+    [SerializeField]
+    private float attack1Knockback = 2f;
+
+    // Attack2用ノックバック
+    [SerializeField]
+    private float attack2Knockback = 3f;
+
+    // Attack3用ノックバック
+    [SerializeField]
+    private float attack3Knockback = 8f;
+
     // 敵Layer
     [SerializeField]
     private LayerMask enemyLayer;
@@ -453,6 +465,25 @@ public class PlayerController : MonoBehaviour
             enemyLayer
         );
 
+        // 現在のコンボ用ノックバック
+        float currentKnockback = attack1Knockback;
+
+        // コンボごとのノックバック値を割り当て
+        switch (comboStep)
+        {
+            case 1:
+                currentKnockback = attack1Knockback;
+                break;
+
+            case 2:
+                currentKnockback = attack2Knockback;
+                break;
+
+            case 3:
+                currentKnockback = attack3Knockback;
+                break;
+        }
+
         // Enemy全処理
         foreach (Collider2D enemy in hitEnemies)
         {
@@ -463,7 +494,7 @@ public class PlayerController : MonoBehaviour
             if (enemyHealth != null)
             {
                 // ダメージを与える
-                enemyHealth.TakeDamage(attackDM, transform);
+                enemyHealth.TakeDamage(attackDM, transform, currentKnockback);
             }
         }
     }
