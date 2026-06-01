@@ -184,8 +184,19 @@ public class PlayerController : MonoBehaviour
         // ★まず完全ガード
         if (!GameManager.IsGameStarted)
         {
+            // 接地判定だけ更新
+            CheckGround();
+            Debug.Log("isGrounded = " + isGrounded);
+            Debug.Log("verticalSpeed = " + rb.linearVelocity.y);
+
+            //
+            animator.SetBool("isGrounded", isGrounded);
+
             // ゲーム開始前は移動停止
             animator.SetBool("isRunning", false);
+            // ゲーム開始前に落下速度を0にする(開始演出時の落下アニメループ防止)
+            animator.SetFloat("verticalSpeed", 0);
+
             return;
         }
 
