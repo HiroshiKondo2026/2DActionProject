@@ -201,7 +201,7 @@ Assets/
 
 ## AI利用の有無 <a id="use-of-ai"></a>
 
-- [ ] コード実装例・デバッグ（ChatGPT / Gemini 等）
+- [×] コード実装例・デバッグ（ChatGPT / Gemini 等）
 - [ ] Git 操作の確認（Copilot 等）
 - [ ] その他（　　　　　　　　　　　　　　　　　　　　）
 
