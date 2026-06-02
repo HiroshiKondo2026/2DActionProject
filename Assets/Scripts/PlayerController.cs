@@ -197,8 +197,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("IsGameStarted = " + GameManager.IsGameStarted);
         }
 
-
-        // ★まず完全ガード
+        // ゲーム開始前の処理
         if (!GameManager.IsGameStarted)
         {
             // 接地判定だけ更新
@@ -206,7 +205,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("isGrounded = " + isGrounded);
             Debug.Log("verticalSpeed = " + rb.linearVelocity.y);
 
-            //
+            // 接地状態をAnimatorへ送る
             animator.SetBool("isGrounded", isGrounded);
 
             // ゲーム開始前は移動停止
