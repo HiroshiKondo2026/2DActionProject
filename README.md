@@ -45,6 +45,7 @@
 | **勝利条件** | 例：ボス撃破 |
 | **失敗条件** | 例：HPが0になる |
 | **特徴・工夫点** | 画面のスクロール、障害物や敵を避けつつ倒しつつ進むアクション性 |
+| **プレゼンテーション** | https://1drv.ms/p/c/d9d112398efc3fc8/IQCOsYJdyBBtToEDROVBPRd-AYECvFawsTSa7sXpYR45hic?e=3HVYOq |
 
 ---
 
