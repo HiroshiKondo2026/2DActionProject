@@ -181,7 +181,8 @@ Assets/
 ---
 
 ## 発表内容（予定） <a id="presentation-plan"></a>
-
+発表用PowerPoint
+https://1drv.ms/p/c/d9d112398efc3fc8/IQCOsYJdyBBtToEDROVBPRd-AYECvFawsTSa7sXpYR45hic?e=U7rsTG
 | 項目 | 内容 |
 |------|------|
 | **タイトル** | Mutant&Vaiant(仮)α版​　|
