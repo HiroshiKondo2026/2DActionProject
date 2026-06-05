@@ -10,13 +10,14 @@
 - [プロジェクト概要](#project-overview)
 - [完成度レベル（目標）](#completion-levels)
 - [使用予定のUnity機能](#unity-features)
+- [AI利用の有無](#use-of-ai)
 - [進行スケジュール（目安）](#schedule)
 - [進捗メモ](#progress-notes)
 - [エラーログ](#error-log)
 - [開発ルール](#development-rules)
 - [発表内容（予定）](#presentation-plan)
 - [参考資料](#references)
-- [AI利用の有無](#use-of-ai)
+
 
 ---
 
