@@ -100,7 +100,7 @@
 -   死亡処理
 
 ### Enemyバリエーション
-※実機ではカラーパレットをいじっているため、ここに載せているものとは色味が違う
+**※実機ではカラーパレットをいじっているため、ここに載せているものとは色味が違う**
 -   通常Enemy
 <img width="100" height="100" alt="Enemy0_Idle1" src="https://github.com/user-attachments/assets/e6d61791-da36-4036-8c07-93a7f012836b" />
 
