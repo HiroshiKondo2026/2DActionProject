@@ -1,3 +1,4 @@
+
 # 2Dアクションゲーム α版仕様書
 
 ## 1. 概要
@@ -27,6 +28,12 @@
 -   3段コンボ攻撃…タイミングよく攻撃ボタンを押すと次の攻撃(コンボ)が発生する
 -   Attack1 → Attack2 → Attack3
 -   コンボごとに攻撃範囲とノックバック量が異なる
+-   攻撃1、攻撃2、攻撃3
+  
+  <img width="100" height="100" alt="Attack1_2" src="https://github.com/user-attachments/assets/d343abab-8a4f-4d31-8d55-9c4e49ebf812" /><img width="130" height="100" alt="Attack2_1" src="https://github.com/user-attachments/assets/061dd310-5928-442a-8c16-79a32cfb121f" /><img width="124" height="100" alt="Attack3_2" src="https://github.com/user-attachments/assets/197edbf7-9a8b-47c6-aa39-2b8d16639da1" />
+
+
+
 
 ------------------------------------------------------------------------
 
@@ -93,16 +100,24 @@
 -   死亡処理
 
 ### Enemyバリエーション
-
+※実機ではカラーパレットをいじっているため、ここに載せているものとは色味が違う
 -   通常Enemy
+<img width="100" height="100" alt="Enemy0_Idle1" src="https://github.com/user-attachments/assets/e6d61791-da36-4036-8c07-93a7f012836b" />
+
 -   高速移動Enemy
+<img width="177" height="100" alt="EnemyFast0_a01" src="https://github.com/user-attachments/assets/443c0241-abdb-437c-9055-b49fc4bc1d16" />
+
 -   BossEnemy
+<img width="355" height="200" alt="BossIdle" src="https://github.com/user-attachments/assets/4f8048e6-ab5e-4503-995b-cf0cee78e972" />
+
 
 ### 重量システム
-
+-   PlayerとEnemyにWeightの概念を持たせる
+-   α版では下記の簡単な仕様実装だが、β版ではEnemyによって押せたり押されたりするものを用意する
+  
 #### Weight 1
 
--   プレイヤーと押し合い
+-   プレイヤーと押し合いで均衡
 
 #### Weight 2
 
@@ -133,15 +148,20 @@
 ### Player UI
 
 -   HP表示
+<img width="462" height="55" alt="PlayerHPUI" src="https://github.com/user-attachments/assets/eb57ca8c-d7b5-4b6b-bcde-8adac65203c3" />
+
 
 ### Boss UI
 
 -   Boss HPゲージ
+<img width="308" height="42" alt="BossHPUI" src="https://github.com/user-attachments/assets/904565cf-e441-458d-b2e0-3f724b8c7a56" />
 
-### フェード演出
 
--   シーン開始時フェードイン
--   UIはフェード後に表示
+### ステージ開始演出
+
+-   シーン開始時フェードイン＆ステージタイトル表示演出
+<img width="790" height="442" alt="StartEffect" src="https://github.com/user-attachments/assets/1dad23f5-928c-41ec-bba0-9fba3a4223a6" />
+
 
 ------------------------------------------------------------------------
 
@@ -151,14 +171,24 @@
 
 -   タイトル表示
 -   Enterでゲーム開始
+<img width="1122" height="632" alt="Title" src="https://github.com/user-attachments/assets/a33e06f0-2a38-479c-a61f-2f5b18696d98" />
 
-### Stage1
 
--   通常ステージ
+### Stage1-1
+
+-   通常ステージ(横長)
+<img width="656" height="224" alt="1-1" src="https://github.com/user-attachments/assets/32faae11-6d47-411e-b60b-090d2c135d27" />
+
+### Stage1-2
+-   通常ステージ(縦長)
+<img width="234" height="394" alt="タイトルなし" src="https://github.com/user-attachments/assets/e7dd1568-1d37-4b64-9f26-48d28cb96103" />
+
 
 ### BossScene
 
--   ボス戦
+-   ボス専用ステージ
+<img width="559" height="233" alt="1-Boss" src="https://github.com/user-attachments/assets/610cf0f7-f0c5-4b71-becc-820f249deaa9" />
+
 
 ### ClearScene
 
