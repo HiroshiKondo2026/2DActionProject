@@ -10,14 +10,25 @@
 ------------------------------------------------------------------------
 
 ## 2. 操作方法
+ - α版
 
-  操作         キー
-  ------------ -------
-  左移動       ← / A
-  右移動       → / D
-  ジャンプ     Space
-  攻撃         Z
-  ゲーム終了   Esc
+ | 操作 | キー|
+ | ------------ | ------- |
+ | 左移動 | ← / A |
+ | 右移動 | → / D |
+ | ジャンプ | Space |
+ | 攻撃 | Z |
+ | ゲーム終了| Esc |
+
+  - β版(予定)
+
+ | 操作 | キー|
+ | ------------ | ------- |
+ | 左移動 | ← / A / 左スティック左 |
+ | 右移動 | → / D / 左スティック右 |
+ | ジャンプ | Space / Aボタン / マウス左クリック |
+ | 攻撃 | Z / Bボタン / マウス右クリック |
+ | ゲーム終了| Esc |
 
 ### ジャンプ
 
@@ -28,12 +39,7 @@
 -   3段コンボ攻撃…タイミングよく攻撃ボタンを押すと次の攻撃(コンボ)が発生する
 -   Attack1 → Attack2 → Attack3
 -   コンボごとに攻撃範囲とノックバック量が異なる
--   攻撃1、攻撃2、攻撃3
   
-  <img width="100" height="100" alt="Attack1_2" src="https://github.com/user-attachments/assets/d343abab-8a4f-4d31-8d55-9c4e49ebf812" /><img width="130" height="100" alt="Attack2_1" src="https://github.com/user-attachments/assets/061dd310-5928-442a-8c16-79a32cfb121f" /><img width="124" height="100" alt="Attack3_2" src="https://github.com/user-attachments/assets/197edbf7-9a8b-47c6-aa39-2b8d16639da1" />
-
-
-
 
 ------------------------------------------------------------------------
 
@@ -42,7 +48,7 @@
 ### 移動
 
 -   左右移動
--   向き反転
+-   向き反転可能
 -   空中移動可能
 
 ### ジャンプ
@@ -58,6 +64,7 @@
 
 -   被弾時ノックバック
 -   HPが0になると死亡
+-   最大HP100(仮)⇒マップ移動で回復(β版ではHPを引き継がせる)
 
 ------------------------------------------------------------------------
 
@@ -70,15 +77,22 @@
 -   近距離攻撃
 -   小ノックバック
 
+  <img width="100" height="100" alt="Attack1_2" src="https://github.com/user-attachments/assets/d343abab-8a4f-4d31-8d55-9c4e49ebf812" />
+
 #### Attack2
 
 -   中距離攻撃
 -   中ノックバック
 
+ <img width="130" height="100" alt="Attack2_1" src="https://github.com/user-attachments/assets/061dd310-5928-442a-8c16-79a32cfb121f" />
+
+ 
 #### Attack3
 
 -   広範囲攻撃
 -   大ノックバック
+
+<img width="124" height="100" alt="Attack3_2" src="https://github.com/user-attachments/assets/197edbf7-9a8b-47c6-aa39-2b8d16639da1" />
 
 ### 攻撃判定
 
@@ -193,12 +207,16 @@
 ### ClearScene
 
 -   クリア演出
+  ToBeContinued　のテキスト表示のみ
 -   5秒後にTitleSceneへ戻る
 
 ### GameOverScene
 
 -   ゲームオーバー演出
+ <img width="789" height="439" alt="GameOver" src="https://github.com/user-attachments/assets/d8a94060-32f8-48f4-80de-e5b6da260706" />
+
 -   5秒後にTitleSceneへ戻る
+
 
 ------------------------------------------------------------------------
 
@@ -217,11 +235,39 @@
 
 ## 10. ゲームフロー
 
-TitleScene ↓ Stage1 ↓ BossScene ↓ ClearScene ↓ TitleScene
+- TitleScene
+
+  ↓
+  
+- Stage1-1
+
+  ↓
+  
+- Stage1-2
+
+  ↓
+  
+- BossScene
+
+  ↓
+  
+- ClearScene
+
+  ↓
+  
+- TitleScene
 
 死亡時
 
-Stage1 / BossScene ↓ GameOverScene ↓ TitleScene
+- Stage1-1 / Stage1-2 / BossScene
+
+  ↓
+  
+-  GameOverScene
+
+  ↓
+  
+- TitleScene
 
 ------------------------------------------------------------------------
 
@@ -245,22 +291,14 @@ Stage1 / BossScene ↓ GameOverScene ↓ TitleScene
 
 ------------------------------------------------------------------------
 
-## 12. α版調整項目
+## 12. β版候補機能
 
--   プレイヤー操作感調整
--   Enemyバランス調整
--   Bossバランス調整
--   背景演出追加
--   パララックススクロール追加
-
-------------------------------------------------------------------------
-
-## 13. β版候補機能
-
--   新Input System移行
--   ゲームパッド対応
--   SE追加
--   BGM追加
--   スキル追加
+-   新Input System移行(ゲームパッド、マウス対応)
+-   ステージ追加
+-   Player挙動周りの修正と調整
+-   Enemy種類追加
+-   EnemyAI周り修正
+-   BGM追加、SE追加
+-   アイテム追加
 -   UI改善
 -   演出強化
