@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -56,6 +57,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform groundCheck;
 
+    // 攻撃中の移動用GroundCheck距離
+    [SerializeField]
+    private float attackMoveGroundCheckDistance = 0.6f;
+
     // Ground判定半径
     [SerializeField]
     private float groundCheckRadius = 0.1f;
@@ -102,6 +107,21 @@ public class PlayerController : MonoBehaviour
     // Attack3の攻撃範囲
     [SerializeField]
     private float attack3Radius = 1.5f;
+
+    // Attack1浮かせ力
+    [SerializeField]
+    private float attack1LaunchPower = 1.8f;
+
+    // Attack2浮かせ力
+    [SerializeField]
+    private float attack2LaunchPower = 0f;
+
+    // Attack3浮かせ力
+    [SerializeField]
+    private float attack3LaunchPower = 0f;
+
+    // 現在の浮かせ力
+    private float currentLaunchPower;
 
 
     // =========================
@@ -163,9 +183,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private bool startFacingRight = true;
 
+    // 攻撃中の移動距離(Attack1は多め、Attack3は少なめ)
+    [SerializeField] private float attack1MoveDistance = 0.55f;
+    [SerializeField] private float attack2MoveDistance = 0.55f;
+    [SerializeField] private float attack3MoveDistance = 0.275f;
+
+    // 攻撃中の移動速度
+    private float attackMoveSpeed;
+
+    // コンボ追尾対象 Attack1の攻撃開始時に設定され、Attack1～3の移動で追尾する
+    private Transform comboTarget;
+
+    // 攻撃中の移動がGround切れで途中終了したときに、攻撃終了まで移動させないようにするフラグ
+    private bool isAttackLocked = false;
+    // 攻撃終了後の硬直時間（調整ポイント）
+    [SerializeField] private float attack1EndLock = 0.25f;
+    [SerializeField] private float attack2EndLock = 0.12f;
+    [SerializeField] private float attack3EndLock = 0.12f;
+
     private void Start()
     {
-        Debug.Log("Player Start : " + gameObject.name);
         // Rigidbody2D取得
         rb = GetComponent<Rigidbody2D>();
         // PlayerHealth取得
@@ -180,8 +217,6 @@ public class PlayerController : MonoBehaviour
     // ゲーム開始時に最初に呼ばれる
     private void Awake()
     {
-        Debug.Log("Player Awake : " + gameObject.name);
-
         // Rigidbody2D取得
         rb = GetComponent<Rigidbody2D>();
 
@@ -209,8 +244,6 @@ public class PlayerController : MonoBehaviour
         {
             // 接地判定だけ更新
             CheckGround();
-            Debug.Log("isGrounded = " + isGrounded);
-            Debug.Log("verticalSpeed = " + rb.linearVelocity.y);
 
             // 接地状態をAnimatorへ送る
             animator.SetBool("isGrounded", isGrounded);
@@ -267,24 +300,28 @@ public class PlayerController : MonoBehaviour
         // 攻撃入力
         if (inputReader.AttackPressed)
         {
-            // 攻撃中でないならAttack1開始
+            // 攻撃ロック中はAttackできない
+            if (isAttackLocked)
+            {
+                return;
+            }
+
             if (!isAttacking)
             {
                 HandleAttackInput();
             }
-
-            // 攻撃中なら、次段受付時のみ許可
             else if (canNextCombo)
             {
                 HandleAttackInput();
-
             }
-
             Debug.Log("攻撃開始");
             Debug.Log("現在コンボ段数：" + comboStep);
         }
 
-
+        // 攻撃中の移動処理
+        float direction = isFacingRight ? 1f : -1f;
+        // 攻撃中の移動速度を設定
+        rb.linearVelocity = new Vector2(direction * attackMoveSpeed, rb.linearVelocity.y);
     }
 
     // 物理演算用
@@ -457,6 +494,17 @@ public class PlayerController : MonoBehaviour
                 currentAttackRadius
             );
         }
+        // GroundCheck位置に円を描く
+        if (groundCheck != null)
+        {
+            // GroundCheck黄色
+            Gizmos.color = Color.yellow;
+
+            // GroundCheck位置から、向きに応じた距離だけ先の位置を計算する
+            Vector2 checkPos = (Vector2)groundCheck.position + Vector2.right * (isFacingRight ? 1 : -1) * attackMoveGroundCheckDistance;
+            // GroundCheck位置に円を描く
+            Gizmos.DrawWireSphere(checkPos, groundCheckRadius);
+        }
     }
 
     // 攻撃処理    
@@ -479,19 +527,22 @@ public class PlayerController : MonoBehaviour
         // 現在のコンボ用ノックバック
         float currentKnockback = attack1Knockback;
 
-        // コンボごとのノックバック値を割り当て
+        // 現在のコンボ用のノックバックと浮かせ力
         switch (comboStep)
         {
             case 1:
                 currentKnockback = attack1Knockback;
+                currentLaunchPower = attack1LaunchPower;
                 break;
 
             case 2:
                 currentKnockback = attack2Knockback;
+                currentLaunchPower = attack2LaunchPower;
                 break;
 
             case 3:
                 currentKnockback = attack3Knockback;
+                currentLaunchPower = attack3LaunchPower;
                 break;
         }
 
@@ -505,8 +556,14 @@ public class PlayerController : MonoBehaviour
             if (enemyHealth != null)
             {
                 // ダメージを与える
-                enemyHealth.TakeDamage(attackDM, transform, currentKnockback);
+                enemyHealth.TakeDamage(attackDM, transform, currentKnockback, currentLaunchPower);
+                Debug.Log(comboStep + "段目の攻撃が敵にヒット！ダメージ：" + attackDM);
             }
+        }
+        // コンボ段階1の攻撃で、攻撃範囲内に敵がいるなら、コンボ追尾対象を更新する
+        if (comboStep == 1)
+        {
+            UpdateComboTarget(hitEnemies);
         }
     }
 
@@ -631,24 +688,30 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("EndAttack呼ばれた");
 
-        // 遷移中なら終了処理しない
         if (animator.IsInTransition(0))
         {
             Debug.Log("遷移中なので終了スキップ");
             return;
         }
 
-        isAttacking = false;
+        float lockTime = 0f;
 
-        canNextCombo = false;
+        switch (comboStep)
+        {
+            case 1:
+                lockTime = attack1EndLock;
+                break;
+            case 2:
+                lockTime = attack2EndLock;
+                break;
+            case 3:
+                lockTime = attack3EndLock;
+                break;
+        }
 
-        comboStep = 0;
-
-        animator.SetInteger("ComboStep", 0);
-
-        Debug.Log("受付終了");
-        Debug.Log("Attack終了");
+        StartCoroutine(EndAttackRoutine(lockTime));
     }
+
     // Enemyと接触中
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -731,5 +794,137 @@ public class PlayerController : MonoBehaviour
         }
         // Scale適用
         transform.localScale = scale;
+    }
+
+    // 攻撃中の移動を開始する
+    private void StartAttackMove(float distance, float duration)
+    {
+        StartCoroutine(AttackMoveCoroutine(distance, duration));
+    }
+
+    // 攻撃中の移動をコルーチンで処理する
+    private System.Collections.IEnumerator AttackMoveCoroutine(float distance, float duration)
+    {
+        // 移動速度を計算する
+        float moved = 0f;
+        // 向きに応じた移動方向を設定する
+        float direction = isFacingRight ? 1f : -1f;
+        // 攻撃中の移動速度を設定する
+        while (moved < distance)
+        {
+            // Groundがないなら移動終了
+            if (!HasGroundAhead(direction))
+            {
+                yield break;
+            }
+            // 1フレームで移動する距離を計算する
+            float move = (distance / duration) * Time.deltaTime;
+            // Playerを移動させる
+            transform.position += new Vector3(direction * move, 0, 0);
+            // 移動距離を加算する
+            moved += move;
+            // 次のフレームまで待つ
+            yield return null;
+        }
+    }
+
+    // 各攻撃開始時に呼ばれるAnimation Event用のメソッド
+    public void Attack1MoveStart()
+    {
+        StartAttackMove(
+            attack1MoveDistance,
+            0.19f);
+    }
+    // Attack2とAttack3は距離短め、時間も短めにして、素早く動いて攻撃する感じにする
+    public void Attack2MoveStart()
+    {
+        StartAttackMove(
+            attack2MoveDistance,
+            0.10f);
+    }
+    // Attack2とAttack3は距離短め、時間も短めにして、素早く動いて攻撃する感じにする
+    public void Attack3MoveStart()
+    {
+        StartAttackMove(
+            attack3MoveDistance,
+            0.10f);
+    }
+
+    // 攻撃中の移動開始前に、Groundがあるか確認する
+    private bool HasGroundAhead(float direction)
+    {
+        // GroundCheck位置から、向きに応じた距離だけ先の位置を計算する
+        Vector2 checkPosition = (Vector2)groundCheck.position + Vector2.right * direction * attackMoveGroundCheckDistance;
+
+        // その位置にGroundLayerがあるか確認する
+        return Physics2D.OverlapCircle(checkPosition, groundCheckRadius, groundLayer);
+    }
+
+    // コンボ追尾対象を更新する
+    private void UpdateComboTarget(Collider2D[] hitEnemies)
+    {
+        // 攻撃範囲内に敵がいないなら終了
+        if (hitEnemies.Length == 0)
+        {
+            return;
+        }
+
+        // 最も近い敵を探す
+        float nearestDistance = float.MaxValue;
+        // 最も近い敵のTransform
+        Transform nearestEnemy = null;
+
+        // 攻撃範囲内の敵全てを確認する
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            // 敵までの距離を計算してdistanceに代入
+            float distance = Mathf.Abs(enemy.transform.position.x - transform.position.x);
+
+            // 最も近い敵を更新する
+            if (distance < nearestDistance)
+            {
+                // 最も近い敵の距離を更新する
+                nearestDistance = distance;
+                // 最も近い敵のTransformを更新する
+                nearestEnemy = enemy.transform;
+            }
+        }
+        // 追尾対象を最も近い敵にする
+        comboTarget = nearestEnemy;
+    }
+    // コンボ追尾対象に向き直る
+    public void FaceComboTarget()
+    {
+        // 追尾対象がいないなら終了
+        if (comboTarget == null)
+        {
+            return;
+        }
+        // 追尾対象の位置に向き直る
+        FaceEnemy(comboTarget.position);
+    }
+
+    // 攻撃終了後の硬直処理をコルーチンで行う
+    private IEnumerator AttackLockCoroutine()
+    {
+        isAttackLocked = true;
+
+        // ★ここが硬直時間（調整ポイント）
+        yield return new WaitForSeconds(0.4f);
+
+        isAttackLocked = false;
+    }
+    private IEnumerator EndAttackRoutine(float lockTime)
+    {
+        // ここで即解除しない
+        yield return new WaitForSeconds(lockTime);
+
+        isAttacking = false;
+        canNextCombo = false;
+
+        comboStep = 0;
+        animator.SetInteger("ComboStep", 0);
+
+        comboTarget = null;
     }
 }
