@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PlayerHPUI : MonoBehaviour
 {
     // HPバーのSlider
+    [Tooltip("HPバーのSlider")]
     [SerializeField]
     private Slider hpSlider;
 

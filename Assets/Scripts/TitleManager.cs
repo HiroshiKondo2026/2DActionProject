@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 // Scene切替用
@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class TitleManager : MonoBehaviour
 {
     // 遷移先Scene名
+    [Tooltip("遷移先Scene名")]
     [SerializeField]
     private string nextSceneName = "Stage1_1";
 

@@ -4,10 +4,12 @@ using UnityEngine.UI;
 public class BossHPUI : MonoBehaviour
 {
     // BossのHP管理
+    [Tooltip("BossのHP管理(EnemyHealth参照)")]
     [SerializeField]
     private EnemyHealth bossHealth;
 
     // HPバー
+    [Tooltip("HPバーのSlider")]
     [SerializeField]
     private Slider hpSlider;
 

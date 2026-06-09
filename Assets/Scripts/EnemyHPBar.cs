@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyHPBar : MonoBehaviour
 {
     // HPゲージ本体(Image)
+    [Tooltip("HPゲージ本体(Image)")]
     [SerializeField] private Image hpFillImage;
 
     // EnemyHealth参照

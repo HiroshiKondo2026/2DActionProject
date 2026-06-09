@@ -1,12 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
     // ダメージ量
+    [Tooltip("ダメージ量")]
     [SerializeField]
     private int damage = 1;
 
     // ノックバック力
+    [Tooltip("ノックバック力")]
     [SerializeField]
     private float knockbackForce = 5f;
 
