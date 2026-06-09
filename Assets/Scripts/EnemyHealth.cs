@@ -94,6 +94,20 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damage, Transform attacker, float knockbackPower, float launchPower)
     {
+        EnemyAI enemyAI = GetComponent<EnemyAI>();
+        // 攻撃中なら攻撃をキャンセルしてノックバックさせる
+        if (enemyAI != null)
+        {
+            enemyAI.CancelAttack();
+        }
+
+        // ノックバック中なら処理しない
+        if (IsKnockback)
+        {
+            Debug.Log("Knockback中なので無視");
+            return;
+        }
+
         // 死亡中なら処理しない
         if (isDead) return;
 
@@ -150,12 +164,6 @@ public class EnemyHealth : MonoBehaviour
             // 打ち上げ力を加える
             rb.AddForce(Vector2.up * finalLaunchPower, ForceMode2D.Impulse);
         }
-        // 浮かせ力を加える
-        if (finalLaunchPower > 0f)
-        {
-            rb.AddForce(Vector2.up * finalLaunchPower, ForceMode2D.Impulse);
-        }
-
         Debug.Log(gameObject.name + " Weight=" + weightLevel + " Multiplier=" + launchMultiplier + " Launch=" + finalLaunchPower);
         // ダメージログ
         Debug.Log(gameObject.name + " に " + damage + " ダメージ");

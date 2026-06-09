@@ -154,9 +154,6 @@ public class EnemyAI : MonoBehaviour
     private bool isStunImmune;
     private float stunImmuneTimer;
 
-    // スタンテスト用
-    private bool stunTestDone;
-
     // 初期化
     private void Awake()
     {
@@ -179,6 +176,7 @@ public class EnemyAI : MonoBehaviour
         // スタン時間
         if (isStunned)
         {
+            Debug.Log("スタン時間残り：" + stunTimer);
             // スタン時間減らす
             stunTimer -= Time.deltaTime;
             // スタン時間終了したらスタン終了
@@ -212,13 +210,6 @@ public class EnemyAI : MonoBehaviour
             // 横移動停止
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             return;
-        }
-        // スタンテスト
-        if (!stunTestDone)
-        {
-            stunTestDone = true;
-
-            ApplyStun(2f);
         }
 
         // 飛ばされ中は移動停止
@@ -647,7 +638,7 @@ public class EnemyAI : MonoBehaviour
         // スタン中
         isStunned = true;
         // スタン時間セット
-        stunTimer = stunTime;
+        stunTimer = stunTime * 2;
         // スタン無効開始
         isStunImmune = true;
         // スタン無効時間セット
@@ -665,5 +656,11 @@ public class EnemyAI : MonoBehaviour
         isStunned = false;
         // スタンアニメ終了
         animator.SetBool("isStunned", false);
+
+    }
+    // 攻撃キャンセル　Animation Eventから呼ばれる
+    public void CancelAttack()
+    {
+        isAttacking = false;
     }
 }

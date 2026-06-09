@@ -8313,6 +8313,42 @@ PrefabInstance:
       propertyPath: attack3EndLock
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: attack3Knockback
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackDamage
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackRadius
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackStopTime
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackStunTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackKnockback
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackDownOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackDownOffset.y
+      value: -1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: jumpAttackForwardOffset.x
+      value: 1.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8392564140115359092, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
       propertyPath: m_Name
       value: Player

@@ -40,6 +40,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float jumpPower = 12f;
 
+    // 空中ジャンプ攻撃使用済みか
+    private bool hasUsedJumpAttack;
+
     // 右向き判定
     private bool isFacingRight = true;
 
@@ -201,6 +204,41 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float attack2EndLock = 0.12f;
     [SerializeField] private float attack3EndLock = 0.12f;
 
+    // ジャンプ攻撃中フラグ
+    private bool isJumpAttacking;
+
+    // =========================
+    // JumpAttack設定
+    // =========================
+
+    // 前方判定
+    [SerializeField]
+    private Vector2 jumpAttackForwardOffset;
+
+    // 下方向判定
+    [SerializeField]
+    private Vector2 jumpAttackDownOffset;
+
+    // 判定半径
+    [SerializeField]
+    private float jumpAttackRadius = 1.0f;
+
+    // ノックバック
+    [SerializeField]
+    private float jumpAttackKnockback = 10f;
+
+    // ダメージ
+    [SerializeField]
+    private int jumpAttackDamage = 1;
+
+    // ジャンプ攻撃中の移動停止(落下停止)
+    [SerializeField]
+    private float jumpAttackStopTime = 0.15f;
+
+    // スタン時間
+    [SerializeField]
+    private float jumpAttackStunTime = 1f;
+
     private void Start()
     {
         // Rigidbody2D取得
@@ -285,7 +323,7 @@ public class PlayerController : MonoBehaviour
         {
             Flip();
         }
-
+        Debug.Log(inputReader.JumpPressed);
         // ジャンプ入力
         if (inputReader.JumpPressed)
         {
@@ -300,18 +338,30 @@ public class PlayerController : MonoBehaviour
         // 攻撃入力
         if (inputReader.AttackPressed)
         {
+            Debug.Log("AttackInput");
+            // 空中ならジャンプ攻撃
+            if (!isGrounded)
+            {
+                // ジャンプ攻撃処理
+                HandleJumpAttack();
+                return;
+            }
+
             // 攻撃ロック中はAttackできない
             if (isAttackLocked)
             {
                 return;
             }
-
+            // 地上なら通常攻撃
             if (!isAttacking)
             {
+                // 攻撃処理
                 HandleAttackInput();
             }
+            // 攻撃中で、次コンボ受付中なら、次のコンボへ進める
             else if (canNextCombo)
             {
+                // 攻撃処理
                 HandleAttackInput();
             }
             Debug.Log("攻撃開始");
@@ -322,6 +372,19 @@ public class PlayerController : MonoBehaviour
         float direction = isFacingRight ? 1f : -1f;
         // 攻撃中の移動速度を設定
         rb.linearVelocity = new Vector2(direction * attackMoveSpeed, rb.linearVelocity.y);
+
+        if (Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            Debug.Log("isAttacking = " + isAttacking);
+            Debug.Log("isGrounded = " + isGrounded);
+            Debug.Log("hasUsedJumpAttack = " + hasUsedJumpAttack);
+        }
+        // ジャンプ攻撃中で、ジャンプ攻撃アニメ再生中でなければ、ジャンプ攻撃終了
+        if (isJumpAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("JumpAttack"))
+        {
+            isJumpAttacking = false;
+            isAttacking = false;
+        }
     }
 
     // 物理演算用
@@ -410,7 +473,10 @@ public class PlayerController : MonoBehaviour
     // ジャンプ回数リセット
     private void ResetJumpCount()
     {
+        // ジャンプ回数リセット
         jumpCount = 0;
+        // 空中ジャンプ攻撃使用フラグリセット
+        hasUsedJumpAttack = false;
     }
 
     // キャラクターの向きを変更する
@@ -505,6 +571,15 @@ public class PlayerController : MonoBehaviour
             // GroundCheck位置に円を描く
             Gizmos.DrawWireSphere(checkPos, groundCheckRadius);
         }
+        // ジャンプ攻撃のGizmo表示
+        Gizmos.color = Color.cyan;
+        // 向きによって攻撃位置反転
+        Vector2 forwardPos = (Vector2)transform.position + new Vector2(jumpAttackForwardOffset.x * (isFacingRight ? 1 : -1), jumpAttackForwardOffset.y);
+        // 下方向は向き関係なく一定
+        Vector2 downPos = (Vector2)transform.position + new Vector2(jumpAttackDownOffset.x * (isFacingRight ? 1 : -1), jumpAttackDownOffset.y);
+        // 攻撃範囲表示
+        Gizmos.DrawWireSphere(forwardPos, jumpAttackRadius);
+        Gizmos.DrawWireSphere(downPos, jumpAttackRadius);
     }
 
     // 攻撃処理    
@@ -578,6 +653,23 @@ public class PlayerController : MonoBehaviour
 
         // 表示OFF
         isAttackGizmoVisible = false;
+    }
+
+    // 空中ジャンプ攻撃処理
+    public void JumpAttack()
+    {
+        // 向きによって攻撃位置反転
+        Vector2 forwardPos = (Vector2)transform.position + new Vector2(jumpAttackForwardOffset.x * (isFacingRight ? 1 : -1), jumpAttackForwardOffset.y);
+
+        // 下方向は向き関係なく一定
+        Vector2 downPos = (Vector2)transform.position + new Vector2(jumpAttackDownOffset.x * (isFacingRight ? 1 : -1), jumpAttackDownOffset.y);
+
+        // 前方と下方向の攻撃範囲内のEnemy取得
+        Collider2D[] forwardHits = Physics2D.OverlapCircleAll(forwardPos, jumpAttackRadius, enemyLayer);
+        Collider2D[] downHits = Physics2D.OverlapCircleAll(downPos, jumpAttackRadius, enemyLayer);
+        // ダメージとノックバックを与える処理
+        DamageEnemies(forwardHits);
+        DamageEnemies(downHits);
     }
 
     /// <summary>
@@ -674,6 +766,30 @@ public class PlayerController : MonoBehaviour
         // 移動停止や向き固定に使用
         isAttacking = true;
     }
+
+    // 空中ジャンプ攻撃処理
+    private void HandleJumpAttack()
+    {
+        isJumpAttacking = true;
+        isAttacking = true;
+        // 使用済みなら終了
+        if (hasUsedJumpAttack)
+        {
+            return;
+        }
+        // ジャンプ攻撃使用済みにする
+        hasUsedJumpAttack = true;
+        // 攻撃状態ON
+        isAttacking = true;
+        // ジャンプ攻撃Trigger
+        animator.SetTrigger("JumpAttack");
+        // 確認用ログ
+        Debug.Log("ジャンプ攻撃");
+
+        // 落下停止
+        StartCoroutine(JumpAttackStopCoroutine());
+    }
+
     // 次コンボ入力を許可する
     // Animation Event から呼ばれる
     public void EnableNextCombo()
@@ -926,5 +1042,55 @@ public class PlayerController : MonoBehaviour
         animator.SetInteger("ComboStep", 0);
 
         comboTarget = null;
+    }
+    // ジャンプ攻撃終了処理
+    public void EndJumpAttack()
+    {
+        isAttacking = false;
+        isJumpAttacking = false;
+        isAttacking = false;
+    }
+
+    // ジャンプ攻撃で敵にダメージを与える処理
+    private void DamageEnemies(Collider2D[] hitEnemies)
+    {
+        // 攻撃範囲内のEnemy全てに処理
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            // EnemyHealth取得
+            EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+            // EnemyHealthが存在しないなら次の敵へ
+            if (enemyHealth == null)
+            {
+                continue;
+            }
+            // ダメージを与える
+            enemyHealth.TakeDamage(jumpAttackDamage, transform, jumpAttackKnockback, 0f);
+
+            // EnemyAI取得
+            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+            // EnemyAIが存在するならスタンを与える
+            if (enemyAI != null)
+            {
+                // スタンを与える
+                enemyAI.ApplyStun(jumpAttackStunTime);
+            }
+        }
+    }
+
+    // ジャンプ攻撃中の移動停止処理
+    private IEnumerator JumpAttackStopCoroutine()
+    {
+        // 現在の速度停止
+        rb.linearVelocity = Vector2.zero;
+
+        // 重力無効
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+
+        yield return new WaitForSeconds(jumpAttackStopTime);
+
+        // 重力復帰
+        rb.gravityScale = originalGravity;
     }
 }
