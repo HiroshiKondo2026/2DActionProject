@@ -80,7 +80,7 @@
 - [x] UI（Canvas, Button, TextMeshPro）
 - [ ] ScriptableObject / JSONデータ
 - [ ] アニメーション / DOTween
-- [ ] サウンド（BGM・SE）
+- [×] サウンド（BGM・SE）
 - [ ] NavMesh / AI
 - [x] Timeline / Cinemachine
 - [x] 物理（Rigidbody / CharacterController 等）
