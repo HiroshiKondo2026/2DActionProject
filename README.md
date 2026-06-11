@@ -186,6 +186,7 @@
 | 5/21| Player' AnimationEvent has no function name specified!| Animator | Timelineに余計なAnimationEventの指定が入っていたので削除した||
 | 5/22| MissingReferenceException | TilePalleteへ画像を追加したり削除などをしていたらエラーが出るようになっていたので、古いParetteとLibralyの削除から再起動で修正||
 | 5/22| NullReferenceException: Object reference not set to an instance of an object BossHPUI.Update () (at Assets/Scripts/BossHPUI.cs:30)|Boss用のUIを作成したものの、Prefab化の際にオブジェクトの参照が外れていたため、再度設定して修正。同様にPrefab化の際に参照が外れてエラー出ることが多いので注意する|
+| 6/11 | ArgumentException: The Object you want to instantiate is null. UnityEngine.Object.Instantiate (UnityEngine.Object original, UnityEngine.Vector3 position, UnityEngine.Quaternion rotation) (at <5fbef2e591e14a4c91f3c5e34508b853>:0)|PlayerController|これもPrefabのオブジェクト参照設定漏れ|
 | ... | ... | ... | ... | ... |
 
 > ※ エラーが出たら記録してください。暫定対応と「後で見直す点」も書いて OK です。
