@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class EnemyHealth : MonoBehaviour
+/// <summary>
+/// IDamageable対応
+/// </summary>
+public class EnemyHealth : MonoBehaviour, IDamageable
 {
     // 最大HP
     [SerializeField]
@@ -283,6 +286,16 @@ public class EnemyHealth : MonoBehaviour
         {
             IsLaunched = false;
         }
+    }
+
+    /// <summary>
+    /// IDamageable実装（Projectile共通ダメージ入口）
+    /// 既存TakeDamageと同一処理
+    /// </summary>
+    void IDamageable.TakeDamage(int damage, Transform attacker, float knockbackPower, float launchPower)
+    {
+        // 既存処理へそのまま委譲
+        TakeDamage(damage, attacker, knockbackPower, launchPower);
     }
 
 }

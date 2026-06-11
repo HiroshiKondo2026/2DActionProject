@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -218,21 +217,19 @@ public class PlayerController : MonoBehaviour
     [Tooltip("攻撃中の移動距離(Attack1は多め、Attack3は少なめ)")]
     [SerializeField] private float attack3MoveDistance = 0.275f;
 
-    // 攻撃中の移動速度
-    private float attackMoveSpeed;
-
     // コンボ追尾対象 Attack1の攻撃開始時に設定され、Attack1～3の移動で追尾する
     private Transform comboTarget;
 
     // 攻撃中の移動がGround切れで途中終了したときに、攻撃終了まで移動させないようにするフラグ
     private bool isAttackLocked = false;
+
     // 攻撃終了後の硬直時間（調整ポイント）
     [Tooltip("攻撃終了後の硬直時間（調整ポイント）")]
     [SerializeField] private float attack1EndLock = 0.25f;
     [Tooltip("攻撃終了後の硬直時間（調整ポイント）")]
     [SerializeField] private float attack2EndLock = 0.12f;
     [Tooltip("攻撃終了後の硬直時間（調整ポイント）")]
-    [SerializeField] private float attack3EndLock = 0.12f;
+    [SerializeField] private float attack3EndLock = 0.25f;
 
     // ジャンプ攻撃中フラグ
     private bool isJumpAttacking;
@@ -279,10 +276,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float jumpAttackStunRate = 1.0f;
 
+    /// <summary>
+    /// ProjectilePrefab
+    /// </summary>
+    [Header("Projectile Settings")]
+    [Tooltip("発射するProjectilePrefab")]
+    [SerializeField] private Projectile projectilePrefab;
+
     private void Start()
     {
-        // Rigidbody2D取得
-        rb = GetComponent<Rigidbody2D>();
         // PlayerHealth取得
         playerHealth = GetComponent<PlayerHealth>();
         // Animator取得
@@ -312,11 +314,6 @@ public class PlayerController : MonoBehaviour
     // 入力取得を行う
     private void Update()
     {
-        if (Keyboard.current.pKey.wasPressedThisFrame)
-        {
-            Debug.Log("IsGameStarted = " + GameManager.IsGameStarted);
-        }
-
         // ゲーム開始前の処理
         if (!GameManager.IsGameStarted)
         {
@@ -334,7 +331,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // 左右入力 いったん旧入力システムで
+        // 左右入力
         moveInput = inputReader.MoveInput.x;
 
         // 横入力があるか
@@ -342,6 +339,9 @@ public class PlayerController : MonoBehaviour
 
         // Animatorへ移動状態を送る
         animator.SetBool("isRunning", isRunning);
+
+        // 接地判定
+        CheckGround();
 
         // 接地状態をAnimatorへ送る
         animator.SetBool("isGrounded", isGrounded);
@@ -355,15 +355,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // 接地判定
-        CheckGround();
-
         // 攻撃中は向き固定
         if (!isAttacking)
         {
             Flip();
         }
-        Debug.Log(inputReader.JumpPressed);
+
         // ジャンプ入力
         if (inputReader.JumpPressed)
         {
@@ -378,7 +375,7 @@ public class PlayerController : MonoBehaviour
         // 攻撃入力
         if (inputReader.AttackPressed)
         {
-            Debug.Log("AttackInput");
+
             // 空中ならジャンプ攻撃
             if (!isGrounded)
             {
@@ -387,7 +384,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            // 攻撃ロック中はAttackできない
+            //
             if (isAttackLocked)
             {
                 return;
@@ -410,21 +407,21 @@ public class PlayerController : MonoBehaviour
 
         // 攻撃中の移動処理
         float direction = isFacingRight ? 1f : -1f;
-        // 攻撃中の移動速度を設定
-        rb.linearVelocity = new Vector2(direction * attackMoveSpeed, rb.linearVelocity.y);
 
-        if (Keyboard.current.oKey.wasPressedThisFrame)
-        {
-            Debug.Log("isAttacking = " + isAttacking);
-            Debug.Log("isGrounded = " + isGrounded);
-            Debug.Log("hasUsedJumpAttack = " + hasUsedJumpAttack);
-        }
         // ジャンプ攻撃中で、ジャンプ攻撃アニメ再生中でなければ、ジャンプ攻撃終了
         if (isJumpAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("JumpAttack"))
         {
             isJumpAttacking = false;
             isAttacking = false;
         }
+        //飛び道具ボタン押したらShootProjectile()呼ぶ
+        if (inputReader.ShootPressed)
+        {
+            Debug.Log("ShootPressed: " + inputReader.ShootPressed);
+            //飛び道具発射メソッド
+            ShootProjectile();
+        }
+
     }
 
     // 物理演算用
@@ -1060,16 +1057,6 @@ public class PlayerController : MonoBehaviour
         FaceEnemy(comboTarget.position);
     }
 
-    // 攻撃終了後の硬直処理をコルーチンで行う
-    private IEnumerator AttackLockCoroutine()
-    {
-        isAttackLocked = true;
-
-        // ★ここが硬直時間（調整ポイント）
-        yield return new WaitForSeconds(0.4f);
-
-        isAttackLocked = false;
-    }
     private IEnumerator EndAttackRoutine(float lockTime)
     {
         // ここで即解除しない
@@ -1088,7 +1075,6 @@ public class PlayerController : MonoBehaviour
     {
         isAttacking = false;
         isJumpAttacking = false;
-        isAttacking = false;
     }
 
     // ジャンプ攻撃で敵にダメージを与える処理
@@ -1132,5 +1118,75 @@ public class PlayerController : MonoBehaviour
 
         // 重力復帰
         rb.gravityScale = originalGravity;
+    }
+
+    /// <summary>
+    /// Projectileを発射する処理
+    /// </summary>
+    private void ShootProjectile()
+    {
+        // 1. 方向決定（8方向対応の想定）
+        Vector2 direction = GetShootDirection();
+
+        // 2. ダメージ・ノックバック・打ち上げをコンボから取得
+        int dmg = attackDM;
+
+        // ダメージは固定で、ノックバックと打ち上げをコンボ段階に応じて変える想定
+        float knockback = 2f;
+        float launch = 1f;
+
+        switch (comboStep)
+        {
+            case 1:
+                knockback = attack1Knockback;
+                launch = attack1LaunchPower;
+                break;
+
+            case 2:
+                knockback = attack2Knockback;
+                launch = attack2LaunchPower;
+                break;
+
+            case 3:
+                knockback = attack3Knockback;
+                launch = attack3LaunchPower;
+                break;
+        }
+
+        // 3. 生成位置（胸元想定）
+        Vector3 spawnPos = transform.position + (Vector3)(direction * 0.5f);
+
+        // 4. Instantiate
+        Projectile proj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+
+        // 5. 初期化（ここが本体）
+        proj.Initialize(
+            direction,
+            dmg,
+            knockback,
+            launch,
+            gameObject
+        );
+    }
+
+    // 8方向対応の射撃方向決定処理
+    private Vector2 GetShootDirection()
+    {
+        // 方向ベクトル
+        Vector2 dir = Vector2.zero;
+        // 入力取得
+        Vector2 input = inputReader.MoveInput;
+
+        // 入力がなければ向きで決定
+        if (input == Vector2.zero)
+        {
+            // 右向きなら右、左向きなら左
+            return isFacingRight ? Vector2.right : Vector2.left;
+        }
+
+        // 8方向そのまま正規化
+        dir = new Vector2(input.x, input.y);
+        // 斜めも含めて正規化して返す
+        return dir.normalized;
     }
 }

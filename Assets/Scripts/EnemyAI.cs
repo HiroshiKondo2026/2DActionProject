@@ -134,7 +134,7 @@ public class EnemyAI : MonoBehaviour
 
     // ProjectilePrefab
     [SerializeField]
-    private BossProjectile projectilePrefab;
+    private Projectile projectilePrefab;
 
     // 発射位置
     [Tooltip("発射位置")]
@@ -591,19 +591,23 @@ public class EnemyAI : MonoBehaviour
     // Projectile発射
     public void FireProjectile()
     {
-        // そもそも遠距離タイプじゃないなら何もしない
         if (!canShoot) return;
 
-        // FirePointとProjectilePrefabが設定されていないなら終了
         if (firePoint == null || projectilePrefab == null)
             return;
-        // 現在向いている方向を決める
+
         Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
-        // Projectile生成
-        BossProjectile projectile =
+
+        Projectile projectile =
             Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-        // Projectileに方向をセット
-        projectile.SetDirection(direction);
+
+        projectile.Initialize(
+            direction,
+            attackDamage,
+            knockbackForce,
+            1f,              // launchPower（Enemyは仮値でOK）
+            gameObject
+        );
     }
 
     // Enemyと接触中

@@ -10,6 +10,8 @@ public class PlayerInputReader : MonoBehaviour
 
     public bool AttackPressed { get; private set; }
 
+    public bool ShootPressed { get; private set; }
+
     private void Awake()
     {
         inputActions = new PlayerInputActions();
@@ -35,5 +37,7 @@ public class PlayerInputReader : MonoBehaviour
 
         AttackPressed =
             inputActions.Player.Attack.WasPressedThisFrame();
+        ShootPressed =
+            inputActions.Player.Shoot.WasPressedThisFrame();
     }
 }

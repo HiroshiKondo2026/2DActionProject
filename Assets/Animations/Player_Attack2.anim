@@ -100,14 +100,14 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.26666668
+  - time: 0.28333333
     functionName: EnableNextCombo
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.41666666
+  - time: 0.46666667
     functionName: EndAttack
     data: 
     objectReferenceParameter: {fileID: 0}
