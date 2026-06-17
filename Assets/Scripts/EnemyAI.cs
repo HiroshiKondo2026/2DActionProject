@@ -103,7 +103,7 @@ public class EnemyAI : MonoBehaviour
     // 数値を大きくすると遠くまで検知する
     [Tooltip("Rayの長さ\n数値を大きくすると遠くまで検知する")]
     [SerializeField]
-    private float checkDistance = 0.3f;
+    private float checkDistance = 0.5f;
 
     // 地面用Layer
     // GroundLayerだけを検知する
@@ -427,6 +427,18 @@ public class EnemyAI : MonoBehaviour
         // 右向きなら右、左向きなら左
         Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
 
+        Debug.DrawRay(
+        wallCheck.position,
+        direction * checkDistance,
+        Color.red);
+
+        Debug.DrawRay(
+            groundCheck.position,
+            Vector2.down * checkDistance,
+            Color.white);
+
+
+
         // 前方向へRayを飛ばして壁確認
         RaycastHit2D wallHit = Physics2D.Raycast(
             wallCheck.position, // Ray開始位置
@@ -447,10 +459,33 @@ public class EnemyAI : MonoBehaviour
         // 地面が無い場合
         bool noGround = groundHit.collider == null;
 
+
         // 壁がある または 地面が無いなら反転
         if (hitWall || noGround)
         {
             Flip();
+        }
+
+
+        if (hitWall)
+        {
+            Debug.Log("壁判定：" + wallHit.collider.name);
+        }
+
+        if (noGround)
+        {
+            Debug.Log("崖判定");
+        }
+
+        Debug.Log($"hitWall:{hitWall}  noGround:{noGround}");
+        if (groundHit.collider != null)
+        {
+            Debug.Log(
+                $"GroundHit:{groundHit.collider.name}");
+        }
+        else
+        {
+            Debug.Log("GroundHit:null");
         }
     }
 
@@ -497,6 +532,8 @@ public class EnemyAI : MonoBehaviour
     // 向き変更
     private void Flip()
     {
+        Debug.Log(
+        $"Flip  wall:{wallCheck.position}  ground:{groundCheck.position}");
         // 向き反転
         isFacingRight = !isFacingRight;
 

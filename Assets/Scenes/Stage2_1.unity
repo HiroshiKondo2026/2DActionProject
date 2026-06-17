@@ -55931,6 +55931,10 @@ PrefabInstance:
       propertyPath: hitEffectPrefab
       value: 
       objectReference: {fileID: 500345726442012828, guid: 50a810bfd70577b41a2d43ae0241ea2d, type: 3}
+    - target: {fileID: 2237189157722497506, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
+      propertyPath: guardEffectPrefab
+      value: 
+      objectReference: {fileID: 3022102558446658867, guid: cd3d579a2d65b3241a1812f639db37ec, type: 3}
     - target: {fileID: 2484889139916247626, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
