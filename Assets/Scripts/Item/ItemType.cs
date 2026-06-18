@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// アイテム種別
 /// </summary>
 public enum ItemType
 {
-    Projectile, // 飛び道具
-    Crash       // 画面全体攻撃
-    
+    Projectile, // ナイフ
+    Recovery,   // 回復
+    Special     // クラッシュ
 }
 

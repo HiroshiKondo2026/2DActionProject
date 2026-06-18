@@ -625,6 +625,9 @@ MonoBehaviour:
   attack3EffectPrefab: {fileID: 4306488877223958017, guid: ecb38e0319a6ad44cbca52d7b5add7a6, type: 3}
   jumpAttackEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   itemEffectPrefab: {fileID: 467751860875805754, guid: 7c6d9bb9c8994364dbe5ba2e32dd4d13, type: 3}
+  dropItem: {fileID: 11400000, guid: 5b638d8243b1ee84c96f0ce020cf2af4, type: 2}
+  dropCount: 1
+  itemPickupPrefab: {fileID: 5798747640496130727, guid: e8768b8c336400649b32ac21d455b138, type: 3}
 --- !u!114 &4435916279548751840
 MonoBehaviour:
   m_ObjectHideFlags: 0

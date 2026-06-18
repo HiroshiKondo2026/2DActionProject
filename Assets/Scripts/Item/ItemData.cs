@@ -19,6 +19,11 @@ public class ItemData : ScriptableObject
     [SerializeField]
     private Sprite itemIcon;
 
+    [Tooltip("アイテム説明")]
+    [SerializeField]
+    [TextArea]
+    private string description;
+
     //==============================
     // アイテム種別
     //==============================
@@ -76,6 +81,16 @@ public class ItemData : ScriptableObject
     private GameObject projectilePrefab;
 
     //==============================
+    // Recovery用
+    //==============================
+
+    [Header("Recovery設定")]
+
+    [Tooltip("回復量")]
+    [SerializeField]
+    private int healAmount = 30;
+
+    //==============================
     // Crash用
     //==============================
 
@@ -96,6 +111,12 @@ public class ItemData : ScriptableObject
     public string ItemName => itemName;
     public Sprite ItemIcon => itemIcon;
     public ItemType ItemType => itemType;
+    public string Description => description;
+
+    /// <summary>
+    /// 回復量
+    /// </summary>
+    public int HealAmount => healAmount;
 
     /// <summary>
     /// -1で無限使用

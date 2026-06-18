@@ -84,6 +84,19 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private GameObject jumpAttackEffectPrefab;
     [SerializeField] private GameObject itemEffectPrefab;
 
+    [Header("ドロップアイテム")]
+    [Tooltip("撃破時にドロップするアイテム（未設定ならドロップしない）")]
+    [SerializeField]
+    private ItemData dropItem;
+
+    [Tooltip("ドロップする個数")]
+    [SerializeField]
+    private int dropCount = 1;
+
+    [Tooltip("ドロップ時に生成するPickup用Prefab（ItemPickupコンポーネント付き）")]
+    [SerializeField]
+    private GameObject itemPickupPrefab;
+
     private void Awake()
     {
         // 初期HP設定
@@ -233,6 +246,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         // 死亡状態
         isDead = true;
 
+        // アイテムドロップ
+        DropItem();
+
         // AI停止
         EnemyAI enemyAI = GetComponent<EnemyAI>();
 
@@ -251,6 +267,34 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         // 死亡演出開始
         StartCoroutine(DeathCoroutine());
+    }
+
+    // アイテムドロップ処理
+    private void DropItem()
+    {
+        Debug.Log($"[DropItem] 呼び出し dropItem:{dropItem} / itemPickupPrefab:{itemPickupPrefab}");
+
+        // ドロップアイテムかPrefabが未設定なら何もしない
+        if (dropItem == null || itemPickupPrefab == null)
+        {
+            Debug.LogWarning("[DropItem] dropItemまたはitemPickupPrefabが未設定のためスキップしました");
+            return;
+        }
+
+        // 自分の位置にPickup用オブジェクトを生成
+        GameObject pickupObj = Instantiate(itemPickupPrefab, transform.position, Quaternion.identity);
+
+        Debug.Log("[DropItem] " + pickupObj.name + " を生成 位置:" + transform.position);
+
+        // ItemPickupへドロップ内容を設定
+        ItemPickup pickup = pickupObj.GetComponent<ItemPickup>();
+
+        if (pickup != null)
+        {
+            pickup.Setup(dropItem, dropCount);
+        }
+
+        Debug.LogWarning("[DropItem] " + itemPickupPrefab.name + " にItemPickupコンポーネントが見つかりません");
     }
 
     // 被ダメ点滅処理
