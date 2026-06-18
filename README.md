@@ -1,6 +1,7 @@
-**現在のブランチは "beta_0.2" なのでそちらへブランチ切り替えてReadMEを見てください。**
-↓READMEのリンク
-https://github.com/HiroshiKondo2026/2DActionProject/blob/beta_0.2/README.md
+**現在のブランチは "beta_0.5" なのでそちらへブランチ切り替えてReadMEを見てください。**  
+
+↓beta_0.5のリンク
+https://github.com/HiroshiKondo2026/2DActionProject/blob/beta_0.5/README.md
 
 # Unity 個人制作①
 
