@@ -5,6 +5,8 @@ public class EnemyAI : MonoBehaviour
     // デバッグ用：ノックバック発生後の追跡フレーム数
     private int debugTrackFrames = 0;
 
+    [Header("移動設定")]
+
     // 移動速度設定
     [Tooltip("移動速度設定")]
     [SerializeField]
@@ -25,21 +27,24 @@ public class EnemyAI : MonoBehaviour
     // Player位置
     private Transform playerTransform;
 
+    [Header("索敵・追尾設定")]
+
     // 追尾開始距離　指定距離以内なら追尾
     [Tooltip("追尾開始距離　指定距離以内なら追尾")]
     [SerializeField]
     private float chaseDistance = 5f;
 
-    [Tooltip("上下方向の索敵許容距離")]
+    [Tooltip("上下方向の索敵許容距離\nPlayerとの上下距離がこれを超えると索敵対象外になる")]
     [SerializeField]
     private float chaseHeight = 1.5f;
 
     // =========================
     // 近接攻撃設定
     // =========================
+    [Header("近接攻撃設定")]
 
     // 近接攻撃距離
-    [Tooltip("近接攻撃距離")]
+    [Tooltip("近接攻撃距離\nこの距離以内ならPlayerに近接攻撃する")]
     [SerializeField]
     private float meleeAttackDistance = 1.5f;
 
@@ -47,6 +52,7 @@ public class EnemyAI : MonoBehaviour
     // =========================
     // 遠距離攻撃設定
     // =========================
+    [Header("遠距離攻撃設定")]
 
     // 飛び道具攻撃するかどうか
     [Tooltip("飛び道具攻撃するかどうか")]
@@ -54,20 +60,35 @@ public class EnemyAI : MonoBehaviour
     private bool canShoot = false;
 
     // 飛び道具攻撃距離
-    [Tooltip("飛び道具攻撃距離")]
+    [Tooltip("飛び道具攻撃距離\nこの距離以内なら飛び道具で攻撃する")]
     [SerializeField]
     private float rangedAttackDistance = 0;
 
     // 飛び道具攻撃間隔
-    [Tooltip("飛び道具攻撃間隔")]
+    [Tooltip("飛び道具攻撃間隔（秒）")]
     [SerializeField]
     private float rangedAttackCooldown = 3f;
 
     // 次回飛び道具攻撃可能時間
     private float nextRangedAttackTime;
 
+    // ProjectilePrefab
+    [Tooltip("飛び道具のPrefab")]
+    [SerializeField]
+    private Projectile projectilePrefab;
+
+    // 発射位置
+    [Tooltip("発射位置")]
+    [SerializeField]
+    private Transform firePoint;
+
+    // =========================
+    // 攻撃共通設定
+    // =========================
+    [Header("攻撃共通設定")]
+
     // 次攻撃までの間隔
-    [Tooltip("次攻撃までの間隔")]
+    [Tooltip("次攻撃までの間隔（秒）\n近接攻撃のクールダウン")]
     [SerializeField]
     private float attackCooldown = 2f;
 
@@ -78,19 +99,35 @@ public class EnemyAI : MonoBehaviour
     private bool isAttacking = false;
 
     // 攻撃判定位置
-    [Tooltip("攻撃判定位置")]
+    [Tooltip("攻撃判定位置\nここを中心に攻撃範囲を判定する")]
     [SerializeField]
     private Transform attackPoint;
 
     // 攻撃範囲
-    [Tooltip("攻撃範囲")]
+    [Tooltip("攻撃範囲（半径）")]
     [SerializeField]
     private float attackRadius = 0.8f;
 
     // PlayerLayer
-    [Tooltip("PlayerLayer")]
+    [Tooltip("攻撃判定で検知するPlayer用Layer")]
     [SerializeField]
     private LayerMask playerLayer;
+
+    // 攻撃力
+    [Tooltip("攻撃力")]
+    [SerializeField]
+    private int attackDamage = 1;
+
+    // ノックバック力
+    // Enemyごとに吹き飛ばし強さを変更できる
+    [Tooltip("ノックバック力\nEnemyごとに吹き飛ばし強さを変更できる")]
+    [SerializeField]
+    private float knockbackForce = 5f;
+
+    // =========================
+    // 壁・地面センサー設定
+    // =========================
+    [Header("壁・地面センサー設定")]
 
     // 壁確認位置
     // 前方の壁を調べるRayの開始地点
@@ -116,42 +153,25 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private LayerMask groundLayer;
 
-    // 攻撃力
-    [Tooltip("攻撃力")]
-    [SerializeField]
-    private int attackDamage = 1;
-
-    // ノックバック力
-    // Enemyごとに吹き飛ばし強さを変更できる
-    [Tooltip("ノックバック力\nEnemyごとに吹き飛ばし強さを変更できる")]
-    [SerializeField]
-    private float knockbackForce = 5f;
-
     // =========================
     // 重量設定
     // 0 = 軽量
     // 1 = 同格
     // 2 = 重量級
     // =========================
+    [Header("重量設定")]
 
+    [Tooltip("重さレベル\n0:軽量 1:同格 2:重量級\nノックバック攻撃を受けたときの吹き飛びやすさに影響")]
     [SerializeField]
     private int weightLevel = 0;
 
     // 外部取得用
     public int WeightLevel => weightLevel;
 
-    // ProjectilePrefab
-    [SerializeField]
-    private Projectile projectilePrefab;
-
-    // 発射位置
-    [Tooltip("発射位置")]
-    [SerializeField]
-    private Transform firePoint;
-
     // =========================
     // 後退行動設定
     // =========================
+    [Header("後退行動設定")]
 
     // 後退中判定
     private bool isRetreating = false;
@@ -160,7 +180,7 @@ public class EnemyAI : MonoBehaviour
     private float retreatEndTime;
 
     // 後退時間
-    [Tooltip("後退時間")]
+    [Tooltip("後退時間（秒）\n近接攻撃後にPlayerから離れる時間")]
     [SerializeField]
     private float retreatDuration = 1.5f;
 
@@ -170,13 +190,15 @@ public class EnemyAI : MonoBehaviour
     private float retreatSpeed = 3f;
 
     // 後退方向の地面確認位置
-    [Tooltip("後退方向の地面確認位置")]
+    [Tooltip("後退方向の地面確認位置\n後退先に壁や崖が無いか確認する")]
     [SerializeField]
     private Transform retreatGroundCheck;
 
     // =========================
     // スタン設定
     // =========================
+    [Header("スタン設定")]
+
     private bool isStunned;
     private float stunTimer;
     private bool isStunImmune;
@@ -186,6 +208,7 @@ public class EnemyAI : MonoBehaviour
     // 0 = 弱い
     // 1 = 普通
     // 2 = 強い
+    [Tooltip("スタン耐性レベル\n0:弱い 1:普通 2:強い\n数値が高いほどスタン時間が短くなる")]
     [SerializeField]
     private int stunLevel = 1;
 

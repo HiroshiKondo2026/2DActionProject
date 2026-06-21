@@ -65,8 +65,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -29, y: -3}
-  m_SizeDelta: {x: 336, y: -6}
+  m_AnchoredPosition: {x: -28.3483, y: -0.06119919}
+  m_SizeDelta: {x: 333.7891, y: -26.2788}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8760728417399804908
 CanvasRenderer:
@@ -489,7 +489,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 30, y: -50}
-  m_SizeDelta: {x: 400, y: 44}
+  m_SizeDelta: {x: 400, y: 72.7328}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2353600889005810009
 MonoBehaviour:
@@ -777,8 +777,10 @@ MonoBehaviour:
   jumpAttackStopTime: 0.3
   jumpAttackStunRate: 1
   isGuarding: 0
-  jumpAfterimageDuration: 0.5
-  jumpAfterimageStartAlpha: 0.5
+  afterimageDuration: 0.3
+  afterimageStartAlpha: 0.3
+  afterimageTintColor: {r: 0.6, g: 0.8, b: 1, a: 1}
+  jumpAfterimageSpawnInterval: 0.15
   shootTimeoutDuration: 0.5
 --- !u!114 &2237189157722497506
 MonoBehaviour:
@@ -902,6 +904,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: 30, y: 2.9999995}
-  m_SizeDelta: {x: -40, y: -5.999999}
+  m_AnchoredPosition: {x: 30, y: 0}
+  m_SizeDelta: {x: -40, y: 0}
   m_Pivot: {x: -0.000000014901161, y: 0.5}

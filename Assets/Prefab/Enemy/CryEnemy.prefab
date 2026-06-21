@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 2633833787325662458}
     - target: {fileID: 2438158073428606219, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: knockbackForce
-      value: 7.38
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2438158073428606219, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: itemEffectPrefab

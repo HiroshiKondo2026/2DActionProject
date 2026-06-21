@@ -133,7 +133,6 @@ GameObject:
   - component: {fileID: 130882376}
   - component: {fileID: 130882375}
   - component: {fileID: 130882374}
-  - component: {fileID: 130882379}
   m_Layer: 8
   m_Name: PlatformTilemap
   m_TagString: Untagged
@@ -1006,51 +1005,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!66 &130882379
-CompositeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 130882372}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_GeometryType: 1
-  m_GenerationType: 0
-  m_EdgeRadius: 0
-  m_ColliderPaths: []
-  m_CompositePaths:
-    m_Paths: []
-  m_VertexDistance: 0.0005
-  m_OffsetDistance: 0.00005
-  m_UseDelaunayMesh: 0
-  m_CompositeGameObject: {fileID: 130882372}
 --- !u!1 &142954206
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,7 +1676,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.76331043, y: 0.57132, z: -10}
+  m_LocalPosition: {x: -0.7147889, y: 0.57142997, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2097,15 +2051,16 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 55.30285, y: 11.573853}
-      - {x: 49.4863, y: 11.639687}
-      - {x: 9.192402, y: 11.524076}
-      - {x: -0.88534737, y: 11.600173}
-      - {x: -16.080935, y: 11.478085}
+    - - {x: 49.34577, y: 16.662188}
+      - {x: 38.813213, y: 16.603914}
+      - {x: 27.802708, y: 16.791338}
+      - {x: 15.397688, y: 16.3642}
+      - {x: 8.298477, y: 16.316193}
+      - {x: -15.832722, y: 16.442312}
       - {x: -15.969456, y: -9.697921}
       - {x: 70.816216, y: -9.501897}
       - {x: 70.79326, y: 0.8127694}
-      - {x: 70.69589, y: 11.731609}
+      - {x: 70.69589, y: 16.94405}
   m_UseDelaunayMesh: 1
 --- !u!4 &878407999
 Transform:

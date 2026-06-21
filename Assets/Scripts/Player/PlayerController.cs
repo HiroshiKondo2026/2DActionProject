@@ -339,6 +339,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float afterimageStartAlpha = 0.5f;
 
+    // 分身の色味（幽体っぽい青白さなどを調整する用。アルファはafterimageStartAlphaで管理）
+    [Tooltip("分身の色味（幽体っぽい青白さなどを調整する用。アルファはafterimageStartAlphaで管理）")]
+    [SerializeField]
+    private Color afterimageTintColor = new Color(0.6f, 0.8f, 1f);
+
     // ジャンプ軌跡用の分身の生成間隔（接地するまでこの間隔で連続生成する）
     [Tooltip("ジャンプ軌跡用の分身の生成間隔（接地するまでこの間隔で連続生成する）")]
     [SerializeField]
@@ -646,8 +651,8 @@ public class PlayerController : MonoBehaviour
         afterimageRenderer.sprite = spriteRenderer.sprite;
         // 重要：Materialも共有することで、分身の色を変えてもPlayerの色に影響が出ないようにする
         afterimageRenderer.sharedMaterial = spriteRenderer.sharedMaterial;
-        // 初期アルファ値を設定
-        afterimageRenderer.color = new Color(1f, 1f, 1f, afterimageStartAlpha);
+        // 色味と初期アルファ値を設定
+        afterimageRenderer.color = new Color(afterimageTintColor.r, afterimageTintColor.g, afterimageTintColor.b, afterimageStartAlpha);
         // 元のSpriteRendererと同じSortingLayerとOrderを設定
         afterimageRenderer.sortingLayerID = spriteRenderer.sortingLayerID;
         afterimageRenderer.sortingOrder = spriteRenderer.sortingOrder;

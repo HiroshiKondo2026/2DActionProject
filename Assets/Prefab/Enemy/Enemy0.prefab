@@ -200,6 +200,10 @@ PrefabInstance:
       value: -0.06872305
       objectReference: {fileID: 0}
     - target: {fileID: 6043761974081675124, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 6043761974081675124, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_SpriteTilingProperty.pivot.x
       value: 0.49054208
       objectReference: {fileID: 0}
@@ -225,7 +229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6265466934521111435, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: -0.329
       objectReference: {fileID: 0}
     - target: {fileID: 6996493345611146003, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_SleepingMode

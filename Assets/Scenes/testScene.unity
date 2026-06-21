@@ -7749,22 +7749,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2484889139916247626, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 333.7891
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484889139916247626, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: -26.2788
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484889139916247626, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -28.3483
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484889139916247626, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.06119919
-      objectReference: {fileID: 0}
     - target: {fileID: 3456931493024808848, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.49
@@ -7805,41 +7789,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: afterimageDuration
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: afterimageStartAlpha
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: jumpAfterimageDuration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: jumpAfterimageStartAlpha
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3741448961686238491, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: jumpAfterimageSpawnInterval
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5642536874115836130, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 72.7328
-      objectReference: {fileID: 0}
     - target: {fileID: 8392564140115359092, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 9102353066472535152, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9102353066472535152, guid: 1d967a0080454304b85e13fb80d6f056, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7997,7 +7949,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2318872484673963719, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2413020961248239642, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: m_SizeDelta.x

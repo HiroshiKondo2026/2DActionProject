@@ -6,11 +6,15 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
+    [Header("基本設定")]
+
     // 最大HP
+    [Tooltip("最大HP")]
     [SerializeField]
     private int maxHP = 10;
 
     // ノックバック力
+    [Tooltip("ノックバック力\n被弾時に左右へ吹き飛ばす力")]
     [SerializeField]
     private float knockbackForce = 8f;
 
@@ -48,6 +52,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private bool isDead;
 
     // 重さレベル（0:軽い, 1:普通, 2:重い）
+    [Tooltip("重さレベル\n0:軽い 1:普通 2:重い\n打ち上げ攻撃を受けたときの飛びやすさに影響")]
     [SerializeField]
     private int weightLevel = 0;
 
@@ -55,25 +60,33 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [Header("Launch Multiplier")]
 
     // 軽い敵はノックバックが大きく、重い敵は小さくなるように設定
+    [Tooltip("重さレベル0（軽い）のときの打ち上げ力倍率")]
     [SerializeField]
     private float weight0Multiplier = 1.0f;
 
     // 普通の敵はノックバックが通常通り
+    [Tooltip("重さレベル1（普通）のときの打ち上げ力倍率")]
     [SerializeField]
     private float weight1Multiplier = 0.5f;
     // 重い敵はノックバックが小さくなるように設定
+    [Tooltip("重さレベル2（重い）のときの打ち上げ力倍率")]
     [SerializeField]
     private float weight2Multiplier = 0.0f;
 
+    [Header("着地判定")]
+
     // 着地判定用
+    [Tooltip("着地判定用Transform\n足元など地面に近い位置に置く")]
     [SerializeField]
     private Transform landingCheck;
 
     // 着地判定半径
+    [Tooltip("着地判定の半径")]
     [SerializeField]
     private float landingCheckRadius = 0.15f;
 
     // GroundLayer
+    [Tooltip("着地判定で検知する地面用Layer")]
     [SerializeField]
     private LayerMask groundLayer;
 
