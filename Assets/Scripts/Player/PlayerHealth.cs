@@ -92,6 +92,13 @@ public class PlayerHealth : MonoBehaviour
 
         Debug.Log("Player HPを最大HPで初期化しました: " + currentHP);
 
+        // GameData が存在する場合はそこから HP を読み込む（2シーン目以降）
+        if (GameData.Instance != null && GameData.Instance.HasData)
+        {
+            currentHP = GameData.Instance.CurrentHP;
+        }
+
+
         // Rigidbody2D取得
         rb = GetComponent<Rigidbody2D>();
 
@@ -370,5 +377,15 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// シーン遷移時に HP を GameData へ保存する
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (GameData.Instance != null)
+        {
+            GameData.Instance.SaveHP(currentHP, maxHP);
+        }
+    }
 
 }

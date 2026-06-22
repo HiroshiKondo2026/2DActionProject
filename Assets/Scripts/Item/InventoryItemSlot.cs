@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,8 +44,12 @@ public class InventoryItemSlot : MonoBehaviour
         // アイコン（未設定なら非表示）
         if (iconImage != null)
         {
+            // アイコンを設定
             iconImage.sprite  = item.itemData.ItemIcon;
+            // アイコンが設定されていない場合は非表示にする
             iconImage.enabled = item.itemData.ItemIcon != null;
+            // アイコンのアスペクト比を維持する
+            iconImage.preserveAspect = true;
         }
 
         // 所持数

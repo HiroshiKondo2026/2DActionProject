@@ -261,7 +261,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "TestStage\n\u304C\u3093\u3070\u308C\u30FC"
+  m_text: "Stage 1-1\n\u300C\u5F85\u3061\u53D7\u3051\u308B\u3082\u306E\u306F\u300D"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e95752d8b86644648831aafaafa230f1, type: 2}
   m_sharedMaterial: {fileID: 6077281641628068983, guid: e95752d8b86644648831aafaafa230f1, type: 2}

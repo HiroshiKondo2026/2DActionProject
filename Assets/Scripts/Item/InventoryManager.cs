@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -23,6 +23,19 @@ public class InventoryManager : MonoBehaviour
     /// 所持アイテム一覧
     /// </summary>
     public List<InventoryItem> Inventory => inventory;
+
+    /// <summary>
+    /// シーン開始時に GameData からインベントリを復元する（2シーン目以降）
+    /// </summary>
+    private void Awake()
+    {
+        if (GameData.Instance != null && GameData.Instance.HasData)
+        {
+            inventory = GameData.Instance.LoadInventory();
+            equippedItem = GameData.Instance.EquippedItem;
+        }
+    }
+
 
     /// <summary>
     /// アイテム取得
@@ -146,4 +159,16 @@ public class InventoryManager : MonoBehaviour
         // 使用したアイテムを返す
         return usedItem;
     }
+
+    /// <summary>
+    /// シーン遷移時にインベントリを GameData へ保存する
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (GameData.Instance != null)
+        {
+            GameData.Instance.SaveInventory(inventory, equippedItem);
+        }
+    }
+
 }

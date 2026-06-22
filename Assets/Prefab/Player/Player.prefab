@@ -573,6 +573,7 @@ GameObject:
   - component: {fileID: -7818320735057109993}
   - component: {fileID: -8307775951181623357}
   - component: {fileID: 2104940646498491382}
+  - component: {fileID: 2535826035923873306}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -777,10 +778,10 @@ MonoBehaviour:
   jumpAttackStopTime: 0.3
   jumpAttackStunRate: 1
   isGuarding: 0
-  afterimageDuration: 0.3
+  afterimageDuration: 0.5
   afterimageStartAlpha: 0.3
   afterimageTintColor: {r: 0.6, g: 0.8, b: 1, a: 1}
-  jumpAfterimageSpawnInterval: 0.15
+  jumpAfterimageSpawnInterval: 0.125
   shootTimeoutDuration: 0.5
 --- !u!114 &2237189157722497506
 MonoBehaviour:
@@ -871,6 +872,18 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: 5b638d8243b1ee84c96f0ce020cf2af4, type: 2}
     count: -1
   equippedItem: {fileID: 11400000, guid: 5b638d8243b1ee84c96f0ce020cf2af4, type: 2}
+--- !u!114 &2535826035923873306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8392564140115359092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4de2a693a2aef934aa3462ad6b60c2b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentObject
 --- !u!1 &8622455235830675196
 GameObject:
   m_ObjectHideFlags: 0

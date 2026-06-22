@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -111,12 +112,31 @@ public class InventoryMenuUI : MonoBehaviour
     // ポップアップ水平入力の前フレーム値（押した瞬間だけ反応させるため）
     private float prevPopupHorizontal;
 
+    // 内部状態に追加
+    private bool isMenuEnabled = false;
+
+
     //==============================
     // Unity イベント
     //==============================
 
+    // 公開メソッドを追加
+    public void EnableMenu()
+    {
+        // 参照が切れていたら新しいシーンの Player から再取得
+        if (inputReader == null)
+            inputReader = FindFirstObjectByType<PlayerInputReader>();
+        if (inventoryManager == null)
+            inventoryManager = FindFirstObjectByType<InventoryManager>();
+        isMenuEnabled = true;
+    }
+
+
     private void Update()
     {
+        // メニューが有効化されるまで入力を無視する
+        if (!isMenuEnabled) return;
+
         // メニュー開閉は状態に関わらず常に受け付ける
         if (inputReader.MenuPressed)
         {
@@ -349,17 +369,41 @@ public class InventoryMenuUI : MonoBehaviour
             : string.Empty;
     }
 
+    // 装備欄の表示を更新する
     private void UpdateEquipmentDisplay()
     {
+        // 装備中アイテムを取得
         ItemData equipped = inventoryManager.EquippedItem;
 
+        // アイコンとテキストを更新
         if (equippedLabel != null)
             equippedLabel.text = equipped != null ? equipped.ItemName : "装備無し";
-
+        // アイコンは装備中アイテムがあれば表示、なければ非表示
         if (equippedIcon != null)
         {
             equippedIcon.sprite  = equipped?.ItemIcon;
             equippedIcon.enabled = equipped?.ItemIcon != null;
+            // アイコンが表示される場合はアスペクト比を維持する設定にする
+            equippedIcon.preserveAspect = true;
         }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (isOpen) CloseMenu();
+        isMenuEnabled = false;
+
+        // 新しいシーンの Player コンポーネントを再取得する
+        inputReader = FindFirstObjectByType<PlayerInputReader>();
+        inventoryManager = FindFirstObjectByType<InventoryManager>();
+
+        Debug.Log($"OnSceneLoaded: inputReader={inputReader}, inventoryManager={inventoryManager}");
+    }
+
+    // シーン切り替え時にメニューを閉じ、参照をリセットする
+    public void DisableMenu()
+    {
+        if (isOpen) CloseMenu();
+        isMenuEnabled = false;
     }
 }
