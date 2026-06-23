@@ -1218,6 +1218,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boss-2
       objectReference: {fileID: 0}
+    - target: {fileID: 7905422264232131028, guid: 1d8dd927d241dac4bb61159a0fb1baca, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 3762f11ee6d94974d90dbe873acbc662, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8129,7 +8133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2318872484673963719, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2387986645324800897, guid: c6c1d34df1a02bf4eac009980d77300e, type: 3}
       propertyPath: fadeDuration
