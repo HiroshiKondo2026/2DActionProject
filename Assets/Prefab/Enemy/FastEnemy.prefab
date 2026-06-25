@@ -718,8 +718,12 @@ MonoBehaviour:
   jumpAttackEffectPrefab: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
   itemEffectPrefab: {fileID: 467751860875805754, guid: 7c6d9bb9c8994364dbe5ba2e32dd4d13, type: 3}
   dropItem: {fileID: 11400000, guid: 5b638d8243b1ee84c96f0ce020cf2af4, type: 2}
-  dropCount: 1
+  dropCount: 5
   itemPickupPrefab: {fileID: 5798747640496130727, guid: e8768b8c336400649b32ac21d455b138, type: 3}
+  damageSE: {fileID: 8300000, guid: 8acf54ba286327949808af33bbd3b46f, type: 3}
+  isBoss: 0
+  nextSceneOnDeath: 
+  deathAnimationDuration: 2
 --- !u!114 &4435916279548751840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,6 +737,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   moveSpeed: 4
+  meleeAttackSE: {fileID: 8300000, guid: 4ab44bdd435f6434588a069b7e6f45c2, type: 3}
+  rangedAttackSE: {fileID: 0}
   chaseDistance: 5
   chaseHeight: 2
   meleeAttackDistance: 1.5

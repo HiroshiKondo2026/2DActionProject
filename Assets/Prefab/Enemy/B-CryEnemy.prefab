@@ -82,11 +82,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5760565161505179793, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
       propertyPath: attackDamage
-      value: 3
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5760565161505179793, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
+      propertyPath: chaseDistance
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5760565161505179793, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
       propertyPath: knockbackForce
-      value: 8
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5760565161505179793, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
       propertyPath: retreatDuration
@@ -94,8 +98,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5760565161505179793, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
       propertyPath: meleeAttackDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6028132960645388922, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
+      propertyPath: maxHP
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6028132960645388922, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
+      propertyPath: dropItem
+      value: 
+      objectReference: {fileID: 11400000, guid: 5b8654a461828374b9dc0a1b5d8f5b68, type: 2}
+    - target: {fileID: 6028132960645388922, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
+      propertyPath: dropCount
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6028132960645388922, guid: 2f98f14cbcb61ed45913de866c2a9fd9, type: 3}
+      propertyPath: itemPickupPrefab
+      value: 
+      objectReference: {fileID: 5798747640496130727, guid: 6353491dcaf6f9940aa7dcbe8e23f46c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

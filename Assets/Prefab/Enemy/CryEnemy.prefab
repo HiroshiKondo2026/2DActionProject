@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 135283353082105963, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.374
+      value: 0.413
       objectReference: {fileID: 0}
     - target: {fileID: 135283353082105963, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.y
@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 135283353082105963, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.03
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 533160155566962923, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_Controller
@@ -36,6 +36,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.07136218
       objectReference: {fileID: 0}
+    - target: {fileID: 2438158073428606219, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
+      propertyPath: damageSE
+      value: 
+      objectReference: {fileID: 8300000, guid: 49b7ff0a18753304688036470a2be595, type: 3}
     - target: {fileID: 2438158073428606219, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: weightLevel
       value: 0
@@ -70,19 +74,27 @@ PrefabInstance:
       objectReference: {fileID: 1226031520979461127, guid: 9c692d73cd82e0d409bec909e987a5b8, type: 3}
     - target: {fileID: 2947749010080835493, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.264
+      value: 0.415
       objectReference: {fileID: 0}
     - target: {fileID: 2947749010080835493, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.449
+      value: -0.308
       objectReference: {fileID: 0}
     - target: {fileID: 2947749010080835493, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.04
+      value: -0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 3225097791754489481, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.406
       objectReference: {fileID: 0}
     - target: {fileID: 3225097791754489481, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.431
+      value: -0.344
+      objectReference: {fileID: 0}
+    - target: {fileID: 3225097791754489481, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 4435916279548751840, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: moveSpeed
@@ -94,15 +106,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4435916279548751840, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: attackDamage
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4435916279548751840, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: attackRadius
       value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 4435916279548751840, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
+      propertyPath: meleeAttackSE
+      value: 
+      objectReference: {fileID: 8300000, guid: 60be90e00886be14a8c34db4a88baed3, type: 3}
+    - target: {fileID: 4435916279548751840, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: knockbackForce
-      value: 7
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4435916279548751840, guid: b8acfc84eae580440bce0f094e624e39, type: 3}
       propertyPath: retreatDuration

@@ -1679,8 +1679,8 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateGuardState()
     {
-        // アイテム使用中はガード不可（排他にする）
-        if (currentState == PlayerState.Shooting)
+        // Idle以外（攻撃中・ジャンプ攻撃中・アイテム使用中）はガード不可
+        if (currentState != PlayerState.Idle)
         {
             isGuarding = false;
             return;

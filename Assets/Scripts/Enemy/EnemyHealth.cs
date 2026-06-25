@@ -110,6 +110,15 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField]
     private GameObject itemPickupPrefab;
 
+    [Header("SE")]
+    [Tooltip("被ダメージ時の共通SE（攻撃種別を問わない）")]
+    [SerializeField]
+    private AudioClip damageSE;
+
+    [Tooltip("ボスのDieモーション開始時のSE（isBossがONの場合のみ使用）")]
+    [SerializeField]
+    private AudioClip dieSE;
+
     [Header("ボス死亡演出")]
     [Tooltip("ボスかどうか\nONの場合、死亡時に点滅の代わりにDieアニメーションを再生し、再生後に指定Sceneへ遷移する")]
     [SerializeField]
@@ -174,6 +183,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         // 死亡中なら処理しない
         if (isDead) return;
+
+        // 被ダメージSE再生（攻撃種別を問わず共通。Player側の攻撃が増えてもここで一括対応できる）
+        SoundManager.Instance?.PlaySE(damageSE);
 
         // 攻撃種類に応じたエフェクトを発生させる
         SpawnAttackEffect(attackType);
@@ -404,6 +416,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         // 通常Enemyは削除
         Destroy(gameObject);
+    }
+
+    // Die SE再生（AnimationEventから呼ぶ。Dieクリップ内の任意のタイミングに配置する）
+    public void PlayDieSE()
+    {
+        SoundManager.Instance?.PlaySE(dieSE);
     }
 
     // ボス死亡演出 Dieアニメーション再生後に次Sceneへ遷移する

@@ -27,6 +27,15 @@ public class EnemyAI : MonoBehaviour
     // Player位置
     private Transform playerTransform;
 
+    [Header("SE")]
+    [Tooltip("近接攻撃開始時のSE")]
+    [SerializeField]
+    private AudioClip meleeAttackSE;
+
+    [Tooltip("飛び道具攻撃開始時のSE")]
+    [SerializeField]
+    private AudioClip rangedAttackSE;
+
     [Header("索敵・追尾設定")]
 
     // 追尾開始距離　指定距離以内なら追尾
@@ -410,6 +419,9 @@ public class EnemyAI : MonoBehaviour
                 // 攻撃中状態
                 isAttacking = true;
 
+                // 攻撃SE再生
+                SoundManager.Instance?.PlaySE(rangedAttackSE);
+
                 // 遠距離攻撃アニメ開始
                 animator.SetTrigger("RangedAttack");
 
@@ -558,6 +570,9 @@ public class EnemyAI : MonoBehaviour
     private void Attack()
     {
         Debug.Log("近接攻撃開始");
+
+        // 攻撃SE再生
+        SoundManager.Instance?.PlaySE(meleeAttackSE);
 
         // 攻撃中ON
         isAttacking = true;
