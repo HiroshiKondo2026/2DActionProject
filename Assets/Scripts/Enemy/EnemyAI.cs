@@ -241,6 +241,28 @@ public class EnemyAI : MonoBehaviour
         // Animator取得
         animator = GetComponent<Animator>();
 
+        // 距離設定の矛盾チェック
+        ValidateDistanceSettings();
+    }
+
+    /// <summary>
+    /// 距離系パラメータの設定ミスを検知して警告を出す。
+    /// meleeAttackDistanceがchaseDistanceより大きいと、
+    /// 追尾フェーズ（Flip・isMoving更新を行う処理）を経ずに
+    /// 直接近接攻撃の待機分岐に入ってしまい、Playerが反転側に回り込んでも
+    /// 向きが変わらず移動モーションだけが残り続けるという不具合の原因になる。
+    /// </summary>
+    private void ValidateDistanceSettings()
+    {
+        if (meleeAttackDistance > chaseDistance)
+        {
+            Debug.LogWarning(
+                $"[EnemyAI] {gameObject.name}: meleeAttackDistance({meleeAttackDistance})が" +
+                $"chaseDistance({chaseDistance})より大きく設定されています。" +
+                "追尾フェーズをスキップして直接攻撃待機状態に入り、" +
+                "Playerが反転側に回り込んでも向きが変わらなくなる場合があります。" +
+                "meleeAttackDistanceをchaseDistance以下に調整することを推奨します。");
+        }
     }
 
     private void Update()
@@ -385,6 +407,17 @@ public class EnemyAI : MonoBehaviour
         {
             // 移動停止
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+
+            // Player方向確認
+            // meleeAttackDistanceがchaseDistanceより大きい設定の場合、
+            // 追尾フェーズを経ずに直接この分岐へ入ることがあるため、向きの更新をここでも保険として行う
+            float targetDirection = playerTransform.position.x > transform.position.x ? 1f : -1f;
+
+            // 向き違うなら反転
+            if ((targetDirection > 0 && !isFacingRight) || (targetDirection < 0 && isFacingRight))
+            {
+                Flip();
+            }
 
             // 攻撃可能なら攻撃
             if (Time.time >= nextAttackTime) Attack();

@@ -97,6 +97,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private GameObject jumpAttackEffectPrefab;
     [SerializeField] private GameObject itemEffectPrefab;
 
+    [Tooltip("エフェクトの表示位置補正\nEnemyの中心(transform.position)からどれだけズラして出すか")]
+    [SerializeField]
+    private Vector2 effectPositionOffset = Vector2.zero;
+
+    [Tooltip("エフェクトの表示サイズ倍率\n1で元のPrefabのサイズそのまま。0.5なら半分、2なら2倍")]
+    [SerializeField]
+    private float effectScale = 1f;
+
     [Header("ドロップアイテム")]
     [Tooltip("撃破時にドロップするアイテム（未設定ならドロップしない）")]
     [SerializeField]
@@ -265,7 +273,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         GameObject prefab = GetEffectPrefab(attackType);
         if (prefab == null) return;
 
-        Instantiate(prefab, transform.position, Quaternion.identity);
+        // Enemyの中心位置にオフセットを加えた位置に生成する
+        Vector3 spawnPosition = transform.position + (Vector3)effectPositionOffset;
+
+        GameObject effect = Instantiate(prefab, spawnPosition, Quaternion.identity);
+
+        // Prefab本来のサイズに倍率を掛けて反映する
+        effect.transform.localScale *= effectScale;
     }
 
     // 攻撃種類に応じたPrefabを返す

@@ -22,7 +22,7 @@ MonoBehaviour:
   canAutoFire: 0
   canUseInAir: 0
   useTimeoutDuration: 2
-  value: 15
+  value: 40
   knockbackPower: 0
   launchPower: 0
   projectilePrefab: {fileID: 0}

@@ -913,7 +913,7 @@ MonoBehaviour:
   jumpAttackKnockback: 12
   jumpAttackDamage: 5
   jumpAttackStopTime: 0.3
-  jumpAttackStunRate: 1
+  jumpAttackStunRate: 1.5
   isGuarding: 0
   afterimageDuration: 0.5
   afterimageStartAlpha: 0.3

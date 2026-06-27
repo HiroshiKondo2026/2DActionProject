@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 7950347297388490489}
   - component: {fileID: 5539651651906669821}
   - component: {fileID: 4541354297831035424}
+  - component: {fileID: -6424770853570473810}
   m_Layer: 10
   m_Name: BossProjectile
   m_TagString: Untagged
@@ -207,6 +208,22 @@ MonoBehaviour:
   knockbackPower: 15
   launchPower: 2
   owner: {fileID: 0}
+  lifeTime: 5
+--- !u!114 &-6424770853570473810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6931959343812305794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24fddf92530b34341a28cc497dc7e8a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossProjectile
+  moveSpeed: 8
+  damage: 15
+  knockbackForce: 15
   lifeTime: 5
 --- !u!1001 &4627631755020332313
 PrefabInstance:
