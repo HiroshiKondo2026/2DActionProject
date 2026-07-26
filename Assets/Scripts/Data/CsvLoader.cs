@@ -44,9 +44,11 @@ public static class CsvLoader
             // UTF-8で読み込む（BOMがあれば自動で処理される）
             text = File.ReadAllText(path, Encoding.UTF8);
         }
-        catch (IOException e)
+        catch (System.Exception e)
         {
-            Debug.LogError($"[CSV] ファイルの読み込みに失敗しました: {path}\n{e.Message}");
+            // 読み込み系のあらゆる失敗（IO/権限/その他）をここで受け止め、
+            // 空リストを返してゲームは継続させる（＝全項目がInspector値へフォールバック）
+            Debug.LogError($"[CSV] ファイルの読み込みに失敗しました: {path}\n{e.GetType().Name}: {e.Message}");
             return new List<CsvRow>();
         }
 

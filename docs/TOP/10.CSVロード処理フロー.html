@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>10.CSVロード処理フロー</title>
+<style>
+body { margin:0; font-family: 'Yu Gothic UI', 'Meiryo', sans-serif; background:#ffffff; color:#000000; }
+/* 画面上部の帯。全タブ分のボタン(.tab-button)を横並びで表示する */
+.tabbar { background:#2d2d30; padding:8px 8px 0 8px; }
+.tab-button { margin-right:4px; padding:8px 14px; border:none; border-radius:4px 4px 0 0; cursor:pointer; background:#555; color:#fff; font-size:14px; }
+/* 現在選択中のタブのボタンだけ色を変えて強調する。JSのshowTab()がこのクラスを付け外しする */
+.tab-button.active { background:#007acc; }
+/* サイドバーと本文を横並びにする2カラムレイアウト */
+.layout { display:flex; align-items:flex-start; }
+.sidebar { width:220px; flex-shrink:0; border-right:1px solid #ddd; box-sizing:border-box; min-height:100vh; }
+/* 各タブ分のリンク一覧(div)。既定では全て非表示にし、.active が付いているものだけを表示する。
+   これにより「全タブ分のサイドバーを埋め込みつつ、見た目には1つしか出さない」を実現している。
+   paddingとmin-heightをこちら側に持たせることで、タブごとの背景色(インラインスタイル)が
+   サイドバー全体を隙間なく塗りつぶすようにしている */
+.sidebar-list { display:none; padding:12px; box-sizing:border-box; color:#333; }
+.sidebar-list.active { display:block; min-height:100vh; }
+/* リンクの文字色は親(.sidebar-list)の色を継承する。タブごとのインラインスタイルで
+   color を指定した場合、それがそのままリンクの文字色にも反映されるようにするため */
+.sidebar-list a { display:block; padding:6px 4px; color:inherit; text-decoration:none; border-radius:4px; }
+.sidebar-list a:hover { background:rgba(128,128,128,0.15); }
+/* 「今まさに見ているこのページ」へのリンクを、現在地としてハイライトする */
+.sidebar-list a.current { font-weight:bold; color:#007acc; background:#eaf4fc; }
+.content { flex:1; padding:24px; min-width:0; }
+/* 画像がコンテンツ幅からはみ出さないよう自動縮小する（プレビュー/単体HTML出力と同じ考え方） */
+.content img { max-width:100%; height:auto; }
+/* テーブルに罫線を付ける（プレビュー/単体HTML出力と同じ考え方） */
+.content table { border-collapse: collapse; }
+.content th, .content td { border: 1px solid #999; padding: 4px 8px; }
+.content th { background-color: #f0f0f0; }
+pre { position: relative; background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 14px 12px; overflow-x: auto; } pre code { background: none; border: none; padding: 0; font-family: Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre; } code { font-family: Consolas, 'Courier New', monospace; } :not(pre) > code { background-color: rgba(128,128,128,0.15); padding: 2px 5px; border-radius: 4px; font-size: 0.9em; } .code-copy-button { position: absolute; top: 6px; right: 6px; padding: 2px 8px; font-size: 12px; border: 1px solid #d0d7de; border-radius: 4px; background-color: #ffffff; color: #333333; cursor: pointer; opacity: 0.85; } .code-copy-button:hover { opacity: 1; }</style>
+</head>
+<body>
+<div class="tabbar"><button type="button" data-tab="TOP" data-first-page="../TOP/1.%E6%A6%82%E8%A6%81.html" class="tab-button active">TOP</button><button type="button" data-tab="01_基本仕様" data-first-page="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="tab-button">01_基本仕様</button><button type="button" data-tab="02_イベント" data-first-page="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="tab-button">02_イベント</button><button type="button" data-tab="03_Player" data-first-page="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="tab-button">03_Player</button><button type="button" data-tab="04_Stage" data-first-page="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="tab-button">04_Stage</button><button type="button" data-tab="05_Enemy" data-first-page="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="tab-button">05_Enemy</button><button type="button" data-tab="06_Menu" data-first-page="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="tab-button">06_Menu</button><button type="button" data-tab="07_Item" data-first-page="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="tab-button">07_Item</button><button type="button" data-tab="08_BGM,SE" data-first-page="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="tab-button">08_BGM,SE</button><button type="button" data-tab="09_その他1" data-first-page="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="tab-button">09_その他1</button><button type="button" data-tab="99_その他2" data-first-page="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="tab-button">99_その他2</button></div>
+<div class="layout">
+<div class="sidebar"><div class="sidebar-list active" data-tab="TOP"><a href="../TOP/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../TOP/10.CSV%E3%83%AD%E3%83%BC%E3%83%89%E5%87%A6%E7%90%86%E3%83%95%E3%83%AD%E3%83%BC.html" class="current">10.CSVロード処理フロー</a><a href="../TOP/11.CSV%E3%83%AD%E3%83%BC%E3%83%89%E5%87%A6%E7%90%86%E3%83%95%E3%83%AD%E3%83%BC.html" class="">11.CSVロード処理フロー</a><a href="../TOP/2.%E4%BD%9C%E6%A5%AD%E3%83%AA%E3%82%B9%E3%83%88%28%E3%83%A1%E3%83%A2%29.html" class="">2.作業リスト(メモ)</a><a href="../TOP/3.%E4%BD%9C%E6%A5%AD%E5%84%AA%E5%85%88%E5%BA%A6.html" class="">3.作業優先度</a><a href="../TOP/4.PlayerController%E3%83%AA%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0.html" class="">4.PlayerControllerリファクタリング</a><a href="../TOP/5.PlayerCombat.html" class="">5.PlayerCombat</a><a href="../TOP/6.PlayerController%E6%A9%9F%E8%83%BD%E5%88%86%E5%89%B2%E4%BB%95%E4%B8%8A%E3%81%92.html" class="">6.PlayerController機能分割仕上げ</a><a href="../TOP/7.%E5%A4%96%E9%83%A8%E3%83%87%E3%83%BC%E3%82%BF%E5%8F%82%E7%85%A7.html" class="">7.外部データ参照</a><a href="../TOP/8.ItemData.csv.html" class="">8.ItemData.csv</a></div><div class="sidebar-list" data-tab="01_基本仕様"><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/2.%E6%96%B9%E9%87%9D.html" class="">2.方針</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/3.Scene%E3%83%95%E3%83%AD%E3%83%BC.html" class="">3.Sceneフロー</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/4.%E6%93%8D%E4%BD%9C.html" class="">4.操作</a></div><div class="sidebar-list" data-tab="02_イベント"><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/2.%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E4%BB%95%E6%A7%98.html" class="">2.イベント仕様</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/3.TxtData%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88.html" class="">3.TxtDataフォーマット</a></div><div class="sidebar-list" data-tab="03_Player"><a href="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="04_Stage"><a href="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="05_Enemy"><a href="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="06_Menu"><a href="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="07_Item"><a href="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="08_BGM,SE"><a href="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="09_その他1"><a href="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="99_その他2"><a href="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div></div>
+<div class="content" style="background-color:#FFFFFF;"><h1 id="csvitem-enemy">CSVロード処理フロー（Item / Enemy）</h1>
+<p>CSVデータの読み込み処理の全体フローと、不正データに対する耐性（フォールバック・エラー処理）をまとめる。<br />
+各処理には担当メソッド名を記載する。</p>
+<hr />
+<h2 id="section">1. 全体像</h2>
+<p>CSVロードは「<strong>共通の読み込み基盤</strong>」＋「<strong>データ種別ごとのDatabase</strong>」＋「<strong>受け手（SO / MonoBehaviour）</strong>」の3層で構成される。</p>
+<pre><code class="language-text">                    ┌─────────────────────────────────────────┐
+                    │ 共通基盤（全データ種別で使い回す）        │
+                    │  CsvLoader.Load → Parse → ParseRecords   │
+                    │            └→ CsvRow（型付きアクセサ）    │
+                    └─────────────────────────────────────────┘
+                          ▲                         ▲
+          ┌───────────────┘                         └───────────────┐
+   ┌──────────────────────────┐              ┌──────────────────────────┐
+   │ Item系                    │              │ Enemy系                   │
+   │  ItemDatabase             │              │  EnemyDatabase            │
+   │  ItemAssetDatabase        │              │  EnemyHealth.ApplyCsvStats│
+   │  ItemData(プロパティ分岐) │              │  EnemyAI.ApplyCsvStats    │
+   └──────────────────────────┘              └──────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="csvloader">2. 共通の読み込みフロー（CsvLoader）</h2>
+<p>どのCSVも、まずこの共通処理を通る。</p>
+<pre><code class="language-text">呼び出し： CsvLoader.Load(fileName)
+   │
+   ├─ StreamingAssets のパスを組み立て（Application.streamingAssetsPath + fileName）
+   │
+   ├─ File.Exists でファイル存在チェック
+   │     └─ 無ければ Debug.LogError → 空リストを返す（＝全項目フォールバック）
+   │
+   ├─ File.ReadAllText(UTF-8) で読み込み
+   │     └─ 例外（IO/権限/その他）は try-catch で捕捉 → Debug.LogError → 空リスト
+   │
+   └─ CsvLoader.Parse(text, fileName)
+         │
+         ├─ 先頭のBOM(U+FEFF)を除去
+         │
+         ├─ CsvLoader.ParseRecords(text)
+         │     └─ 1文字ずつ走査し、引用符を考慮して行・列へ分解
+         │        （引用符内のカンマ・改行はそのまま値として扱う）
+         │
+         ├─ コメント行（行頭 #）と空行を除外
+         │
+         ├─ 最初の有効行を「ヘッダー（列名）」として採用
+         │
+         └─ 2行目以降を CsvRow として生成してリスト化
+               （列名 → 値 の Dictionary を保持）
+</code></pre>
+<h3 id="csvrow1">CsvRow：1行分の型付きアクセサ</h3>
+<p><code>CsvRow</code> は列名をキーに値を取り出す。<strong>列が無い / 空欄 / 変換失敗でも落ちない</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>メソッド</th>
+<th>挙動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetStringOrNull(列名)</code></td>
+<td>未指定なら null。<code>\n</code> は改行へ変換</td>
+</tr>
+<tr>
+<td><code>GetIntOrNull(列名)</code></td>
+<td>未指定・変換失敗なら null（変換失敗は警告）</td>
+</tr>
+<tr>
+<td><code>GetFloatOrNull(列名)</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>GetBoolOrNull(列名)</code></td>
+<td>同上（true/false/1/0/yes/no/on/off対応）</td>
+</tr>
+<tr>
+<td><code>GetString/GetInt/GetFloat/GetBool(列名, 既定値)</code></td>
+<td>上記の「未指定なら既定値」版</td>
+</tr>
+</tbody>
+</table>
+<p>内部の <code>CsvRow.TryGetRaw</code> が「列が無い→警告」「空欄→未指定扱い（警告なし）」を判定する。</p>
+<hr />
+<h2 id="item">3. Item系のフロー</h2>
+<h3 id="item.csv-itemdata">3-1. 数値データ（item.csv → ItemData のプロパティ）</h3>
+<pre><code class="language-text">ItemData.Cooldown など各プロパティ参照
+   │
+   └─ ItemData.Stats（= ItemDatabase.GetStats(Id)）を見る
+         │
+         ├─ ItemDatabase.GetStats(id)
+         │     └─ ItemDatabase.EnsureLoaded（初回のみ）
+         │           └─ CsvLoader.Load(&quot;item.csv&quot;)
+         │           └─ ItemDatabase.CreateStats で各行を ItemStats 化
+         │
+         ├─ Stats が非null（CSVに該当id行あり）
+         │     └─ 「Stats?.cooldown ?? cooldown」→ CSV値を返す
+         │        （列が空欄なら Stats.cooldown が null → Inspector値）
+         │
+         └─ Stats が null（CSV無し / 該当id行なし）
+               └─ Inspector値（SerializeField）を返す
+</code></pre>
+<ul>
+<li><strong>id の決定</strong>： <code>ItemData.Id</code>（enemy同様、Inspectorのid空欄なら<strong>アセット名</strong>）</li>
+<li><strong>アセット参照</strong>（icon/SE/prefab）は常にInspector値。CSVでは扱わない</li>
+<li>※ItemDataはScriptableObjectのため、実行時に<code>.asset</code>を書き換えると永続化される。<br />
+それを避けるため<strong>フィールドは上書きせず、プロパティで「CSV値 or Inspector値」を分岐</strong>している</li>
+</ul>
+<h3 id="id-itemdata">3-2. ドロップ等での「id → ItemDataアセット」解決</h3>
+<pre><code class="language-text">ItemAssetDatabase.GetItem(id)
+   │
+   └─ ItemAssetDatabase.EnsureLoaded（初回のみ）
+         └─ Resources.LoadAll&lt;ItemData&gt;(&quot;Item&quot;)
+            で Resources/Item/ 配下の全ItemDataを収集し id→ItemData 辞書化
+</code></pre>
+<hr />
+<h2 id="enemy">4. Enemy系のフロー</h2>
+<h3 id="enemy.csv">4-1. 数値データ（enemy.csv → 各フィールドへ上書き）</h3>
+<pre><code class="language-text">Enemy生成時
+   │
+   ├─ EnemyHealth.Awake
+   │     └─ EnemyHealth.ApplyCsvStats
+   │           ├─ EnemyDatabase.GetStats(EnemyId)
+   │           │     └─ EnemyDatabase.EnsureLoaded（初回のみ）
+   │           │           └─ CsvLoader.Load(&quot;enemy.csv&quot;)
+   │           │           └─ EnemyDatabase.CreateStats で各行を EnemyStats 化
+   │           │
+   │           ├─ Stats が null → 何もしない（＝全項目Inspector値のまま）
+   │           │
+   │           ├─ Stats が非null → 値がある項目だけフィールドへ上書き
+   │           │     （例：if (s.maxHP.HasValue) maxHP = s.maxHP.Value;）
+   │           │
+   │           └─ dropItemId があれば ItemAssetDatabase.GetItem で解決し dropItem へ
+   │                 見つからなければ警告 → InspectorのdropItemを使用
+   │
+   └─ EnemyAI.Awake
+         └─ EnemyAI.ApplyCsvStats
+               ├─ id は EnemyHealth.EnemyId を共用
+               └─ EnemyDatabase.GetStats(id) → 値がある項目だけ上書き
+</code></pre>
+<ul>
+<li><strong>id の決定</strong>： <code>EnemyHealth.EnemyId</code>（Inspectorの<code>enemyId</code>空欄なら<strong>オブジェクト名</strong>）</li>
+<li><strong>Enemyは MonoBehaviour</strong> のため、実行時のフィールド書き換えはPlay終了で元に戻り<strong>アセットを汚さない</strong>。<br />
+よってItemのようなプロパティ分岐は不要で、<strong>フィールドを直接上書き</strong>している</li>
+<li>EnemyAI と EnemyHealth は<strong>同じidで同じ行</strong>を読む（1体1行）</li>
+</ul>
+<hr />
+<h2 id="section-1">5. 不正データ・異常系の扱い（一覧）</h2>
+<p><strong>すべてのケースで「ゲームは落ちず、動作を継続」する</strong>よう設計されている。</p>
+<table>
+<thead>
+<tr>
+<th>ケース</th>
+<th>検知メソッド</th>
+<th>出るメッセージ</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSVファイルが無い</td>
+<td><code>CsvLoader.Load</code></td>
+<td>LogError「ファイルが見つかりません」</td>
+<td>空リスト → 全項目Inspector値</td>
+</tr>
+<tr>
+<td>ファイル読み込み失敗（権限等）</td>
+<td><code>CsvLoader.Load</code> (try-catch)</td>
+<td>LogError「読み込みに失敗しました」</td>
+<td>空リスト → 全項目Inspector値</td>
+</tr>
+<tr>
+<td>ファイルが空 / 有効行なし</td>
+<td><code>CsvLoader.Parse</code></td>
+<td>LogWarning「中身が空 / 有効な行がありません」</td>
+<td>空リスト → 全項目Inspector値</td>
+</tr>
+<tr>
+<td>idが空の行</td>
+<td><code>XxxDatabase.EnsureLoaded</code></td>
+<td>LogWarning「id が空の行があります」</td>
+<td>その行を無視</td>
+</tr>
+<tr>
+<td>idが重複</td>
+<td><code>XxxDatabase.EnsureLoaded</code></td>
+<td>LogWarning「id が重複しています」</td>
+<td>最初の行を採用</td>
+</tr>
+<tr>
+<td>列名が無い（ヘッダー綴りミス）</td>
+<td><code>CsvRow.TryGetRaw</code></td>
+<td>LogWarning「列 'X' がありません」</td>
+<td>その項目はInspector値</td>
+</tr>
+<tr>
+<td>値が型変換できない</td>
+<td><code>CsvRow.GetXxxOrNull</code></td>
+<td>LogWarning「'X' を int に変換できません」</td>
+<td>その項目はInspector値</td>
+</tr>
+<tr>
+<td>列が空欄</td>
+<td><code>CsvRow.TryGetRaw</code></td>
+<td>（警告なし。意図的な空欄運用のため）</td>
+<td>その項目はInspector値</td>
+</tr>
+<tr>
+<td><strong>オブジェクトが存在しないidの行</strong></td>
+<td>（なし）</td>
+<td>（なし）</td>
+<td><strong>無害。誰も引かないので辞書に眠るだけ</strong></td>
+</tr>
+<tr>
+<td>オブジェクトはあるがCSVに行が無い</td>
+<td><code>XxxDatabase.GetStats</code>→null</td>
+<td>（なし。正常なフォールバック）</td>
+<td>全項目Inspector値</td>
+</tr>
+<tr>
+<td>dropItemId が解決できない</td>
+<td><code>EnemyHealth.ApplyCsvStats</code></td>
+<td>LogWarning「一致するItemDataが見つかりません」</td>
+<td>InspectorのdropItemを使用</td>
+</tr>
+</tbody>
+</table>
+<h3 id="section-2">補足：意図的に「無害」としているもの</h3>
+<ul>
+<li><strong>オブジェクトが存在しないidの行</strong>（例：テスト用に消したEnemyの行が残っている）<br />
+→ pull型のため参照されず、問題を起こさない。エラーにもしていない</li>
+<li><strong>id typo による静かなフォールバック</strong>（例：<code>Bos-1</code> と打ち間違え）<br />
+→ 動作は継続するが、狙った行が効かない。マルチシーン構成では「シーンにそのidが居るか」を<br />
+実行時に確実に判定できないため、あえて自動エラーにはしていない。<br />
+Console の <code>[XxxDatabase] N 件読み込みました</code> と、値が反映されない挙動で気付く形</li>
+</ul>
+<hr />
+<h2 id="section-3">6. 読み込みタイミングと再読込</h2>
+<ul>
+<li><strong>初回アクセス時に自動ロード</strong>（<code>EnsureLoaded</code>）。シーン配置やコンポーネント不要</li>
+<li>Play開始時に <code>RuntimeInitializeOnLoadMethod</code> で内部辞書を null にリセット<br />
+→ 毎Playでファイルを読み直すため、CSV編集がそのまま反映される</li>
+<li><code>XxxDatabase.Reload()</code> を呼べば任意タイミングで再読込も可能</li>
+</ul>
+<hr />
+<h2 id="section-4">7. 関連ファイル</h2>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Assets/Scripts/Data/CsvLoader.cs</code></td>
+<td>読み込み・パースの共通基盤</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/CsvRow.cs</code></td>
+<td>1行分の型付きアクセサ</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/ItemStats.cs</code> / <code>ItemDatabase.cs</code></td>
+<td>item.csvの数値データ</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/ItemAssetDatabase.cs</code></td>
+<td>id→ItemDataアセットの解決（Resources収集）</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/EnemyStats.cs</code> / <code>EnemyDatabase.cs</code></td>
+<td>enemy.csvの数値データ</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Item/ItemData.cs</code></td>
+<td>Item：プロパティでCSV値/Inspector値を分岐</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Enemy/EnemyHealth.cs</code> / <code>EnemyAI.cs</code></td>
+<td>Enemy：Awakeでフィールドを上書き</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<script>
+// 指定したタブ名に対応するサイドバー・タブボタンだけを active にし、他は非表示/非アクティブにする
+// （段落が1つも無いタブをクリックした場合の、サイドバー表示切り替えのみのフォールバック用）
+function showTab(name) {
+  document.querySelectorAll('.sidebar-list').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+  document.querySelectorAll('.tab-button').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+}
+// 各タブボタンのクリックで、そのタブの最初の段落ページへ実際に遷移する。
+// これにより、サイドバーの表示だけでなく右側の本文も正しく切り替わる。
+document.querySelectorAll('.tab-button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var firstPage = btn.getAttribute('data-first-page');
+    if (firstPage) {
+      window.location.href = firstPage;
+    } else {
+      showTab(btn.getAttribute('data-tab'));
+    }
+  });
+});
+</script>
+<script>
+document.querySelectorAll('pre').forEach(function (preEl) {
+  var codeEl = preEl.querySelector('code');
+  if (!codeEl) return;
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'code-copy-button';
+  btn.textContent = 'コピー';
+  btn.addEventListener('click', function () {
+    copyTextToClipboard(codeEl.textContent, btn);
+  });
+  preEl.appendChild(btn);
+});
+
+function copyTextToClipboard(text, btn) {
+  function showCopied() {
+    btn.textContent = 'コピーしました';
+    setTimeout(function () { btn.textContent = 'コピー'; }, 1500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+      fallbackCopyToClipboard(text, showCopied);
+    });
+  } else {
+    fallbackCopyToClipboard(text, showCopied);
+  }
+}
+
+function fallbackCopyToClipboard(text, onSuccess) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    onSuccess();
+  } catch (e) {
+    // コピーに失敗した場合は何もしない
+  }
+  document.body.removeChild(textarea);
+}
+</script>
+</body>
+</html>

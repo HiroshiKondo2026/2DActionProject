@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>8.ItemData.csv</title>
+<style>
+body { margin:0; font-family: 'Yu Gothic UI', 'Meiryo', sans-serif; background:#ffffff; color:#000000; }
+/* 画面上部の帯。全タブ分のボタン(.tab-button)を横並びで表示する */
+.tabbar { background:#2d2d30; padding:8px 8px 0 8px; }
+.tab-button { margin-right:4px; padding:8px 14px; border:none; border-radius:4px 4px 0 0; cursor:pointer; background:#555; color:#fff; font-size:14px; }
+/* 現在選択中のタブのボタンだけ色を変えて強調する。JSのshowTab()がこのクラスを付け外しする */
+.tab-button.active { background:#007acc; }
+/* サイドバーと本文を横並びにする2カラムレイアウト */
+.layout { display:flex; align-items:flex-start; }
+.sidebar { width:220px; flex-shrink:0; border-right:1px solid #ddd; box-sizing:border-box; min-height:100vh; }
+/* 各タブ分のリンク一覧(div)。既定では全て非表示にし、.active が付いているものだけを表示する。
+   これにより「全タブ分のサイドバーを埋め込みつつ、見た目には1つしか出さない」を実現している。
+   paddingとmin-heightをこちら側に持たせることで、タブごとの背景色(インラインスタイル)が
+   サイドバー全体を隙間なく塗りつぶすようにしている */
+.sidebar-list { display:none; padding:12px; box-sizing:border-box; color:#333; }
+.sidebar-list.active { display:block; min-height:100vh; }
+/* リンクの文字色は親(.sidebar-list)の色を継承する。タブごとのインラインスタイルで
+   color を指定した場合、それがそのままリンクの文字色にも反映されるようにするため */
+.sidebar-list a { display:block; padding:6px 4px; color:inherit; text-decoration:none; border-radius:4px; }
+.sidebar-list a:hover { background:rgba(128,128,128,0.15); }
+/* 「今まさに見ているこのページ」へのリンクを、現在地としてハイライトする */
+.sidebar-list a.current { font-weight:bold; color:#007acc; background:#eaf4fc; }
+.content { flex:1; padding:24px; min-width:0; }
+/* 画像がコンテンツ幅からはみ出さないよう自動縮小する（プレビュー/単体HTML出力と同じ考え方） */
+.content img { max-width:100%; height:auto; }
+/* テーブルに罫線を付ける（プレビュー/単体HTML出力と同じ考え方） */
+.content table { border-collapse: collapse; }
+.content th, .content td { border: 1px solid #999; padding: 4px 8px; }
+.content th { background-color: #f0f0f0; }
+pre { position: relative; background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 14px 12px; overflow-x: auto; } pre code { background: none; border: none; padding: 0; font-family: Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre; } code { font-family: Consolas, 'Courier New', monospace; } :not(pre) > code { background-color: rgba(128,128,128,0.15); padding: 2px 5px; border-radius: 4px; font-size: 0.9em; } .code-copy-button { position: absolute; top: 6px; right: 6px; padding: 2px 8px; font-size: 12px; border: 1px solid #d0d7de; border-radius: 4px; background-color: #ffffff; color: #333333; cursor: pointer; opacity: 0.85; } .code-copy-button:hover { opacity: 1; }</style>
+</head>
+<body>
+<div class="tabbar"><button type="button" data-tab="TOP" data-first-page="../TOP/1.%E6%A6%82%E8%A6%81.html" class="tab-button active">TOP</button><button type="button" data-tab="01_基本仕様" data-first-page="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="tab-button">01_基本仕様</button><button type="button" data-tab="02_イベント" data-first-page="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="tab-button">02_イベント</button><button type="button" data-tab="03_Player" data-first-page="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="tab-button">03_Player</button><button type="button" data-tab="04_Stage" data-first-page="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="tab-button">04_Stage</button><button type="button" data-tab="05_Enemy" data-first-page="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="tab-button">05_Enemy</button><button type="button" data-tab="06_Menu" data-first-page="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="tab-button">06_Menu</button><button type="button" data-tab="07_Item" data-first-page="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="tab-button">07_Item</button><button type="button" data-tab="08_BGM,SE" data-first-page="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="tab-button">08_BGM,SE</button><button type="button" data-tab="09_その他1" data-first-page="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="tab-button">09_その他1</button><button type="button" data-tab="99_その他2" data-first-page="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="tab-button">99_その他2</button></div>
+<div class="layout">
+<div class="sidebar"><div class="sidebar-list active" data-tab="TOP"><a href="../TOP/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../TOP/2.%E4%BD%9C%E6%A5%AD%E3%83%AA%E3%82%B9%E3%83%88%28%E3%83%A1%E3%83%A2%29.html" class="">2.作業リスト(メモ)</a><a href="../TOP/3.%E4%BD%9C%E6%A5%AD%E5%84%AA%E5%85%88%E5%BA%A6.html" class="">3.作業優先度</a><a href="../TOP/4.PlayerController%E3%83%AA%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0.html" class="">4.PlayerControllerリファクタリング</a><a href="../TOP/5.PlayerCombat.html" class="">5.PlayerCombat</a><a href="../TOP/6.PlayerController%E6%A9%9F%E8%83%BD%E5%88%86%E5%89%B2%E4%BB%95%E4%B8%8A%E3%81%92.html" class="">6.PlayerController機能分割仕上げ</a><a href="../TOP/7.%E5%A4%96%E9%83%A8%E3%83%87%E3%83%BC%E3%82%BF%E5%8F%82%E7%85%A7.html" class="">7.外部データ参照</a><a href="../TOP/8.ItemData.csv.html" class="current">8.ItemData.csv</a><a href="../TOP/9.CSV%E3%83%AD%E3%83%BC%E3%83%89%E5%87%A6%E7%90%86%E3%83%95%E3%83%AD%E3%83%BC.html" class="">9.CSVロード処理フロー</a></div><div class="sidebar-list" data-tab="01_基本仕様"><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/2.%E6%96%B9%E9%87%9D.html" class="">2.方針</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/3.Scene%E3%83%95%E3%83%AD%E3%83%BC.html" class="">3.Sceneフロー</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/4.%E6%93%8D%E4%BD%9C.html" class="">4.操作</a></div><div class="sidebar-list" data-tab="02_イベント"><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/2.%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E4%BB%95%E6%A7%98.html" class="">2.イベント仕様</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/3.TxtData%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88.html" class="">3.TxtDataフォーマット</a></div><div class="sidebar-list" data-tab="03_Player"><a href="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="04_Stage"><a href="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="05_Enemy"><a href="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="06_Menu"><a href="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="07_Item"><a href="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="08_BGM,SE"><a href="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="09_その他1"><a href="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="99_その他2"><a href="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div></div>
+<div class="content"><h1 id="item.csv">外部データ参照：item.csv 仕様</h1>
+<p>アイテムのパラメータをCSVから読み込む仕組みの仕様書。<br />
+CSVの書式、読み込みの流れ、文字コード（UTF-8 with BOM）の注意点をまとめる。</p>
+<hr />
+<h2 id="section">1. 概要</h2>
+<h3 id="section-1">目的</h3>
+<ul>
+<li>アイテムのパラメータをCSVで管理し、<strong>ビルド後もCSVを差し替えるだけで調整できる</strong>ようにする</li>
+<li>CSVが壊れていてもゲームが落ちないよう、<strong>Inspector値へフォールバック</strong>する</li>
+</ul>
+<h3 id="section-2">基本方針</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>方針</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>読み込みタイミング</td>
+<td><strong>実行時</strong>にCSVを読む（ビルド後の差し替えが可能）</td>
+</tr>
+<tr>
+<td>置き場所</td>
+<td><code>Assets/StreamingAssets/item.csv</code></td>
+</tr>
+<tr>
+<td>CSVに入れるもの</td>
+<td>数値・文字列・フラグのみ</td>
+</tr>
+<tr>
+<td>CSVに入れないもの</td>
+<td>Sprite / AudioClip / Prefab などのアセット参照、itemType（Inspectorで設定）</td>
+</tr>
+<tr>
+<td>壊れたとき</td>
+<td>Inspector値を使って通常どおり動作する</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="utf-8-with-bom">2. 文字コード：UTF-8 with BOM（重要）</h2>
+<h3 id="utf-8-with-bom-1">必ず「UTF-8 with BOM」で保存すること</h3>
+<p>理由を理解しておくと事故を防げる。</p>
+<h4 id="section-3">前提：テキストファイルに文字コードの情報は入っていない</h4>
+<p>ファイルの実体はただのバイトの羅列で、「これはUTF-8です」というラベルはどこにも無い。<br />
+そのため、開く側が<strong>文字コードを推測するしかない</strong>。</p>
+<h4 id="section-4">文字化けの正体</h4>
+<p>同じ文字でも文字コードによってバイトの並びが違う。</p>
+<table>
+<thead>
+<tr>
+<th>文字</th>
+<th>UTF-8</th>
+<th>Shift-JIS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>あ</code></td>
+<td><code>E3 81 82</code>（3バイト）</td>
+<td><code>82 A0</code>（2バイト）</td>
+</tr>
+</tbody>
+</table>
+<p>日本語版WindowsのExcelは<strong>デフォルトでShift-JISと推測する</strong>ため、<br />
+UTF-8のCSVをそのまま開くとバイトの区切りがズレて <code>アイテムデータ</code> が <code>繧｢繧､繝・Β繝・・繧ｿ</code> のように化ける。</p>
+<h4 id="bom">BOMとは</h4>
+<p><strong>ファイル先頭に置く3バイトの目印</strong> <code>EF BB BF</code>。「これはUTF-8です」と明示的に宣言するもの。</p>
+<pre><code class="language-text">BOMあり： EF BB BF | 23 20 E3 82 A2 ...
+          └─BOM─┘   └──── 本文 ────┘
+BOMなし： 23 20 E3 82 A2 ...
+</code></pre>
+<p>Excelは先頭を見て判定する。</p>
+<ul>
+<li>先頭が <code>EF BB BF</code> → 「UTF-8だ」と認識 → 正しく開ける</li>
+<li>先頭が <code>EF BB BF</code> でない → 「Shift-JISだろう」と推測 → 文字化け</li>
+</ul>
+<h4 id="byte-order-mark">名前の由来（Byte Order Mark）</h4>
+<p>本来はUTF-16用の仕組み。UTF-16は1文字2バイトのため「どちらのバイトを先に置くか」の流儀が2つあり<br />
+（<code>FE FF</code>=ビッグエンディアン / <code>FF FE</code>=リトルエンディアン）、その**バイト順（Byte Order）**を示すのが元の役目。<br />
+UTF-8にはバイト順の問題が無いため、<strong>UTF-8のBOMは単なる「文字コードの署名」として流用されている</strong>。</p>
+<p>正体は文字 <strong>U+FEFF（ゼロ幅ノーブレークスペース）＝見えない文字</strong>。UTF-8で符号化すると <code>EF BB BF</code> になる。</p>
+<h4 id="bom-1">BOMは見えないのが正常</h4>
+<p>幅ゼロの見えない文字であり、BOMを理解しているエディタ／Excelは<br />
+「本文」ではなく「文字コードの目印」として消費するため画面に表示されない。</p>
+<h4 id="bom-2">プログラム側ではBOMを除去する</h4>
+<p>BOMは本文ではないので、そのまま読むと<strong>1列目の列名が <code>id</code> ではなく <code>﻿id</code> になり、列の参照に失敗する</strong>。<br />
+そのため <code>CsvLoader</code> で読み込み時に除去している。</p>
+<pre><code class="language-csharp">/* 先頭のBOM(U+FEFF)を除去する（Excel保存時に付くことがある） */
+if (text.Length &gt; 0 &amp;&amp; text[0] == (char)0xFEFF)
+{
+    text = text.Substring(1);
+}
+</code></pre>
+<p><strong>「Excelには目印が要る／プログラムには目印が邪魔」</strong> という役割分担になっている。</p>
+<h3 id="bom-3">BOMの確認・付与方法</h3>
+<table>
+<thead>
+<tr>
+<th>目的</th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>確認（エディタ）</td>
+<td>VSCode等のステータスバーに <code>UTF-8 with BOM</code> と出るか（<code>UTF-8</code> だけならBOM無し）</td>
+</tr>
+<tr>
+<td>確認（コマンド）</td>
+<td><code>file item.csv</code> → <code>(with BOM)</code> と出るか</td>
+</tr>
+<tr>
+<td>確認（バイト）</td>
+<td><code>head -c 16 item.csv | xxd</code> → 先頭が <code>efbb bf</code> か</td>
+</tr>
+<tr>
+<td>付与（Excel）</td>
+<td>「CSV UTF-8(コンマ区切り)」で保存する（自動でBOMが付く）</td>
+</tr>
+<tr>
+<td>付与（VSCode）</td>
+<td>ステータスバーの文字コード → 「エンコード付きで保存」 → <code>UTF-8 with BOM</code></td>
+</tr>
+<tr>
+<td>付与（メモ帳）</td>
+<td>名前を付けて保存 → 文字コードで <code>UTF-8 (BOM付き)</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="csv">3. CSVの書式ルール</h2>
+<table>
+<thead>
+<tr>
+<th>ルール</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ヘッダー</td>
+<td>最初の有効行を列名として扱う</td>
+</tr>
+<tr>
+<td><strong>列の指定方法</strong></td>
+<td><strong>列名（ヘッダー）をキーに読む。並び順は自由で、変えてもコード修正は不要</strong></td>
+</tr>
+<tr>
+<td>コメント行</td>
+<td>行頭が <code>#</code> の行は無視される</td>
+</tr>
+<tr>
+<td>空行</td>
+<td>無視される</td>
+</tr>
+<tr>
+<td>空欄</td>
+<td>「未指定」として扱い、<strong>その項目だけInspector値が使われる</strong></td>
+</tr>
+<tr>
+<td>改行の表現</td>
+<td>セル内で改行せず、<code>\n</code> と書く（読み込み時に改行へ変換される）</td>
+</tr>
+<tr>
+<td>カンマを含む値</td>
+<td><code>&quot;...&quot;</code> で囲む（引用符内のカンマ・改行はそのまま扱える）</td>
+</tr>
+<tr>
+<td>引用符自体</td>
+<td><code>&quot;&quot;</code> と2つ重ねる</td>
+</tr>
+<tr>
+<td>bool値</td>
+<td><code>true/false</code> <code>1/0</code> <code>yes/no</code> <code>on/off</code>（大文字small問わず。Excelが書く <code>TRUE/FALSE</code> もそのまま読める）</td>
+</tr>
+<tr>
+<td><strong>列順の方針</strong></td>
+<td><strong>文字数の多い項目（descriptionなど）は表が見づらくなるため一番後ろに置く</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="item.csv-1">4. item.csv 列定義</h2>
+<pre><code class="language-text">id,itemName,maxUseCount,cooldown,canAutoFire,canUseInAir,useTimeoutDuration,value,knockbackPower,launchPower,chargeTime,description
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>string</td>
+<td>ItemDataと紐づけるキー。<strong>ItemDataアセット名</strong>（またはItemDataのidに設定した文字列）と一致させる</td>
+</tr>
+<tr>
+<td><code>itemName</code></td>
+<td>string</td>
+<td>アイテム名</td>
+</tr>
+<tr>
+<td><code>maxUseCount</code></td>
+<td>int</td>
+<td>最大使用回数（-1で無限）</td>
+</tr>
+<tr>
+<td><code>cooldown</code></td>
+<td>float</td>
+<td>再使用までの待機時間</td>
+</tr>
+<tr>
+<td><code>canAutoFire</code></td>
+<td>bool</td>
+<td>ボタン長押しで連射するか</td>
+</tr>
+<tr>
+<td><code>canUseInAir</code></td>
+<td>bool</td>
+<td>空中で使用可能か</td>
+</tr>
+<tr>
+<td><code>useTimeoutDuration</code></td>
+<td>float</td>
+<td>使用アニメのタイムアウト秒数（AnimationEvent不発時の保険）</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>int</td>
+<td>効果の大きさ（Projectile:ダメージ / Recovery:回復量）</td>
+</tr>
+<tr>
+<td><code>knockbackPower</code></td>
+<td>float</td>
+<td>ノックバック強さ</td>
+</tr>
+<tr>
+<td><code>launchPower</code></td>
+<td>float</td>
+<td>打ち上げ強さ</td>
+</tr>
+<tr>
+<td><code>chargeTime</code></td>
+<td>float</td>
+<td>発動前のチャージ時間（Crash用）</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>アイテム説明（<code>\n</code> で改行。<strong>長文のため末尾に配置</strong>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="csvinspector">CSVで扱わない項目（Inspectorで設定）</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>itemIcon</code> (Sprite)</td>
+<td>アセット参照はCSVで表現できない</td>
+</tr>
+<tr>
+<td><code>pickupSE</code> (AudioClip)</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>projectilePrefab</code> (GameObject)</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>crashEffectPrefab</code> (GameObject)</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>itemType</code> (enum)</td>
+<td>アセット参照と密結合な構造的項目のため</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="section-5">5. 読み込みの仕組み</h2>
+<h3 id="section-6">データの流れ</h3>
+<pre><code class="language-text">Assets/StreamingAssets/item.csv
+        │  初回アクセス時に自動で読み込み
+        ▼
+CsvLoader          … ファイル読み込み＋パース（BOM除去・引用符・コメント対応）
+        ▼
+ItemDatabase       … id → ItemStats の辞書を構築（static。シーン配置不要）
+        ▲
+        │  ItemDataが自分のIDで引きに行く（pull型）
+ItemData(SO)       … プロパティが「CSV値 or Inspector値」を返す
+        ▼
+PlayerItemAction 等 … CurrentItem.Cooldown など。呼び出し側は変更不要
+</code></pre>
+<h3 id="section-7">設計上のポイント</h3>
+<p><strong>① pull型にしてアセット列挙を不要にした</strong><br />
+Databaseが全ItemDataを探して値を配る（push型）のではなく、<strong>ItemDataが自分のIDでDatabaseを引く</strong>形にした。<br />
+これにより <strong>Resourcesフォルダへのアセット移動も、登録リストの管理も不要</strong>になっている。</p>
+<p><strong>② シーン設定が不要</strong><br />
+<code>ItemDatabase</code> はstaticクラスで、<strong>初回アクセス時に自動でCSVを読む</strong>。ロード用オブジェクトの配置は要らない。</p>
+<p><strong>③ IDは未設定でも動く</strong></p>
+<pre><code class="language-csharp">public string Id =&gt; string.IsNullOrEmpty(id) ? name : id;
+</code></pre>
+<p>Inspectorの <code>id</code> が空なら<strong>アセット名</strong>（<code>Knife</code> / <code>Potion</code>）がIDとして使われる。<br />
+CSVのid列と一致するため、Inspectorでの設定作業はゼロ。</p>
+<p><strong>④ 呼び出し側のコードは変更不要</strong><br />
+<code>CurrentItem.Cooldown</code> などの呼び出しはそのままで、中身がCSV値を返すようになっている。</p>
+<hr />
+<h2 id="section-8">6. フォールバックの仕組み</h2>
+<h3 id="inspector">なぜInspector値を上書きしないのか</h3>
+<p>ScriptableObjectの <code>[SerializeField]</code> を実行時に書き換えると、<br />
+<strong>エディタではその変更が <code>.asset</code> に永続化され</strong>、Playのたびにアセットが書き換わってgit差分が出続ける。</p>
+<p>さらに致命的なのは、<strong>上書きするとInspectorの元の値が消えるため、フォールバック先が無くなる</strong>こと。<br />
+「CSVが無いときはInspector値を使う」を実現するには、<strong>Inspector値を絶対に上書きしない</strong>ことが必須になる。</p>
+<h3 id="section-9">箱を2つに分ける</h3>
+<pre><code class="language-csharp">public class ItemData : ScriptableObject
+{
+    /* 【箱1】Inspector値 = フォールバック。絶対に書き換えない */
+    [SerializeField] private float cooldown = 0.5f;
+
+    /* 【箱2】CSV値 = ItemDatabaseから取得。アセットには保存されない */
+    private ItemStats Stats =&gt; ItemDatabase.GetStats(Id);
+
+    /* CSVがあればCSV値、無ければInspector値 */
+    public float Cooldown =&gt; Stats?.cooldown ?? cooldown;
+}
+</code></pre>
+<p><code>ItemStats</code> の各項目は<strong>null許容</strong>になっており、<code>null</code> = 「CSVで未指定」を意味する。<br />
+これにより列単位でフォールバックできる。</p>
+<h3 id="section-10">動作パターン</h3>
+<table>
+<thead>
+<tr>
+<th>ケース</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSVが正常に読めた</td>
+<td><strong>CSV値</strong>を使う</td>
+</tr>
+<tr>
+<td>CSVファイルが無い / 読み込み失敗</td>
+<td><strong>Inspector値</strong>を使う（エラーログは出るがゲームは正常動作）</td>
+</tr>
+<tr>
+<td>CSVはあるが、その <code>id</code> の行が無い</td>
+<td><strong>Inspector値</strong>を使う</td>
+</tr>
+<tr>
+<td>行はあるが、その列が空欄</td>
+<td><strong>その項目だけInspector値</strong>を使う</td>
+</tr>
+<tr>
+<td>値が型変換できない（例: cooldownに文字列）</td>
+<td>警告を出して<strong>その項目だけInspector値</strong>を使う</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="excel">7. Excel運用ルール</h2>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>手順</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開く</td>
+<td>ダブルクリックでOK（BOMがあるので化けない）</td>
+</tr>
+<tr>
+<td><strong>保存</strong></td>
+<td><strong>必ず「CSV UTF-8(コンマ区切り)」を選ぶ</strong></td>
+</tr>
+<tr>
+<td>説明文の改行</td>
+<td>セル内で改行せず <code>\n</code> と打つ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ 「CSV(コンマ区切り)」（UTF-8が付かない方）で保存すると<strong>Shift-JISになりファイルが壊れる</strong>。<br />
+一度「CSV UTF-8」で保存すれば、以降はCtrl+Sで形式が維持される。</p>
+</blockquote>
+<p>Excelで保存するとコメント行に末尾カンマが付いたり、boolが <code>TRUE/FALSE</code> の大文字になるが、<br />
+どちらもパーサ側で吸収するため問題ない。</p>
+<hr />
+<h2 id="csv-1">8. 新しいCSVを追加するときの手順</h2>
+<ol>
+<li><code>Assets/StreamingAssets/</code> に <strong>UTF-8 with BOM</strong> でCSVを作成する
+<ul>
+<li>テキストエディタで新規作成すると<strong>BOM無しになりExcelで化ける</strong>ので注意</li>
+</ul>
+</li>
+<li>1行目に列名を書く（長文の列は末尾に置く）</li>
+<li><code>XxxStats</code> クラスを作る（各項目は<strong>null許容</strong>にする）</li>
+<li><code>XxxDatabase</code> を作る（<code>CsvLoader.Load()</code> → <code>id</code>をキーに辞書化）</li>
+<li>対象クラスのプロパティを <code>Stats?.xxx ?? インスペクタ値</code> の形にする</li>
+</ol>
+<hr />
+<h2 id="section-11">9. 関連ファイル</h2>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Assets/StreamingAssets/item.csv</code></td>
+<td>アイテムデータ本体</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/CsvLoader.cs</code></td>
+<td>CSV読み込み・パースの共通処理</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/CsvRow.cs</code></td>
+<td>1行分のデータ。型付きアクセサ（<code>GetXxxOrNull</code> / <code>GetXxx</code>）</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/ItemStats.cs</code></td>
+<td>CSV1件分のデータ（null許容）</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/ItemDatabase.cs</code></td>
+<td>item.csvの読み込みと辞書管理</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Item/ItemData.cs</code></td>
+<td>ScriptableObject。CSV値とInspector値のフォールバックを担当</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<script>
+// 指定したタブ名に対応するサイドバー・タブボタンだけを active にし、他は非表示/非アクティブにする
+// （段落が1つも無いタブをクリックした場合の、サイドバー表示切り替えのみのフォールバック用）
+function showTab(name) {
+  document.querySelectorAll('.sidebar-list').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+  document.querySelectorAll('.tab-button').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+}
+// 各タブボタンのクリックで、そのタブの最初の段落ページへ実際に遷移する。
+// これにより、サイドバーの表示だけでなく右側の本文も正しく切り替わる。
+document.querySelectorAll('.tab-button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var firstPage = btn.getAttribute('data-first-page');
+    if (firstPage) {
+      window.location.href = firstPage;
+    } else {
+      showTab(btn.getAttribute('data-tab'));
+    }
+  });
+});
+</script>
+<script>
+document.querySelectorAll('pre').forEach(function (preEl) {
+  var codeEl = preEl.querySelector('code');
+  if (!codeEl) return;
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'code-copy-button';
+  btn.textContent = 'コピー';
+  btn.addEventListener('click', function () {
+    copyTextToClipboard(codeEl.textContent, btn);
+  });
+  preEl.appendChild(btn);
+});
+
+function copyTextToClipboard(text, btn) {
+  function showCopied() {
+    btn.textContent = 'コピーしました';
+    setTimeout(function () { btn.textContent = 'コピー'; }, 1500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+      fallbackCopyToClipboard(text, showCopied);
+    });
+  } else {
+    fallbackCopyToClipboard(text, showCopied);
+  }
+}
+
+function fallbackCopyToClipboard(text, onSuccess) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    onSuccess();
+  } catch (e) {
+    // コピーに失敗した場合は何もしない
+  }
+  document.body.removeChild(textarea);
+}
+</script>
+</body>
+</html>
