@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>10.player.csv</title>
+<style>
+body { margin:0; font-family: 'Yu Gothic UI', 'Meiryo', sans-serif; background:#ffffff; color:#000000; }
+/* 画面上部の帯。全タブ分のボタン(.tab-button)を横並びで表示する */
+.tabbar { background:#2d2d30; padding:8px 8px 0 8px; }
+.tab-button { margin-right:4px; padding:8px 14px; border:none; border-radius:4px 4px 0 0; cursor:pointer; background:#555; color:#fff; font-size:14px; }
+/* 現在選択中のタブのボタンだけ色を変えて強調する。JSのshowTab()がこのクラスを付け外しする */
+.tab-button.active { background:#007acc; }
+/* サイドバーと本文を横並びにする2カラムレイアウト */
+.layout { display:flex; align-items:flex-start; }
+.sidebar { width:220px; flex-shrink:0; border-right:1px solid #ddd; box-sizing:border-box; min-height:100vh; }
+/* 各タブ分のリンク一覧(div)。既定では全て非表示にし、.active が付いているものだけを表示する。
+   これにより「全タブ分のサイドバーを埋め込みつつ、見た目には1つしか出さない」を実現している。
+   paddingとmin-heightをこちら側に持たせることで、タブごとの背景色(インラインスタイル)が
+   サイドバー全体を隙間なく塗りつぶすようにしている */
+.sidebar-list { display:none; padding:12px; box-sizing:border-box; color:#333; }
+.sidebar-list.active { display:block; min-height:100vh; }
+/* リンクの文字色は親(.sidebar-list)の色を継承する。タブごとのインラインスタイルで
+   color を指定した場合、それがそのままリンクの文字色にも反映されるようにするため */
+.sidebar-list a { display:block; padding:6px 4px; color:inherit; text-decoration:none; border-radius:4px; }
+.sidebar-list a:hover { background:rgba(128,128,128,0.15); }
+/* 「今まさに見ているこのページ」へのリンクを、現在地としてハイライトする */
+.sidebar-list a.current { font-weight:bold; color:#007acc; background:#eaf4fc; }
+.content { flex:1; padding:24px; min-width:0; }
+/* 画像がコンテンツ幅からはみ出さないよう自動縮小する（プレビュー/単体HTML出力と同じ考え方） */
+.content img { max-width:100%; height:auto; }
+/* テーブルに罫線を付ける（プレビュー/単体HTML出力と同じ考え方） */
+.content table { border-collapse: collapse; }
+.content th, .content td { border: 1px solid #999; padding: 4px 8px; }
+.content th { background-color: #f0f0f0; }
+pre { position: relative; background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 14px 12px; overflow-x: auto; } pre code { background: none; border: none; padding: 0; font-family: Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre; } code { font-family: Consolas, 'Courier New', monospace; } :not(pre) > code { background-color: rgba(128,128,128,0.15); padding: 2px 5px; border-radius: 4px; font-size: 0.9em; } .code-copy-button { position: absolute; top: 6px; right: 6px; padding: 2px 8px; font-size: 12px; border: 1px solid #d0d7de; border-radius: 4px; background-color: #ffffff; color: #333333; cursor: pointer; opacity: 0.85; } .code-copy-button:hover { opacity: 1; }</style>
+</head>
+<body>
+<div class="tabbar"><button type="button" data-tab="TOP" data-first-page="../TOP/1.%E6%A6%82%E8%A6%81.html" class="tab-button active">TOP</button><button type="button" data-tab="01_基本仕様" data-first-page="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="tab-button">01_基本仕様</button><button type="button" data-tab="02_イベント" data-first-page="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="tab-button">02_イベント</button><button type="button" data-tab="03_Player" data-first-page="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="tab-button">03_Player</button><button type="button" data-tab="04_Stage" data-first-page="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="tab-button">04_Stage</button><button type="button" data-tab="05_Enemy" data-first-page="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="tab-button">05_Enemy</button><button type="button" data-tab="06_Menu" data-first-page="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="tab-button">06_Menu</button><button type="button" data-tab="07_Item" data-first-page="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="tab-button">07_Item</button><button type="button" data-tab="08_BGM,SE" data-first-page="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="tab-button">08_BGM,SE</button><button type="button" data-tab="09_その他1" data-first-page="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="tab-button">09_その他1</button><button type="button" data-tab="99_その他2" data-first-page="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="tab-button">99_その他2</button></div>
+<div class="layout">
+<div class="sidebar"><div class="sidebar-list active" data-tab="TOP"><a href="../TOP/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../TOP/10.player.csv.html" class="current">10.player.csv</a><a href="../TOP/11.csv%E3%83%87%E3%83%BC%E3%82%BF%E3%83%AD%E3%83%BC%E3%83%89%E4%BB%95%E6%A7%98.html" class="">11.csvデータロード仕様</a><a href="../TOP/2.%E4%BD%9C%E6%A5%AD%E3%83%AA%E3%82%B9%E3%83%88%28%E3%83%A1%E3%83%A2%29.html" class="">2.作業リスト(メモ)</a><a href="../TOP/3.%E4%BD%9C%E6%A5%AD%E5%84%AA%E5%85%88%E5%BA%A6.html" class="">3.作業優先度</a><a href="../TOP/4.PlayerController%E3%83%AA%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0.html" class="">4.PlayerControllerリファクタリング</a><a href="../TOP/5.PlayerCombat.html" class="">5.PlayerCombat</a><a href="../TOP/6.PlayerController%E6%A9%9F%E8%83%BD%E5%88%86%E5%89%B2%E4%BB%95%E4%B8%8A%E3%81%92.html" class="">6.PlayerController機能分割仕上げ</a><a href="../TOP/7.%E5%A4%96%E9%83%A8%E3%83%87%E3%83%BC%E3%82%BF%E5%8F%82%E7%85%A7.html" class="">7.外部データ参照</a><a href="../TOP/8.Item.csv.html" class="">8.Item.csv</a><a href="../TOP/9.enemy.csv.html" class="">9.enemy.csv</a></div><div class="sidebar-list" data-tab="01_基本仕様"><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/2.%E6%96%B9%E9%87%9D.html" class="">2.方針</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/3.Scene%E3%83%95%E3%83%AD%E3%83%BC.html" class="">3.Sceneフロー</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/4.%E6%93%8D%E4%BD%9C.html" class="">4.操作</a></div><div class="sidebar-list" data-tab="02_イベント"><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/2.%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E4%BB%95%E6%A7%98.html" class="">2.イベント仕様</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/3.TxtData%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88.html" class="">3.TxtDataフォーマット</a></div><div class="sidebar-list" data-tab="03_Player"><a href="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="04_Stage"><a href="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="05_Enemy"><a href="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="06_Menu"><a href="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="07_Item"><a href="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="08_BGM,SE"><a href="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="09_その他1"><a href="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="99_その他2"><a href="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div></div>
+<div class="content"><h1 id="player.csv">外部データ参照：player.csv 仕様</h1>
+<p>Playerのパラメータを CSV から読み込む仕組みの仕様書。<br />
+CSVの書式（key-value形式）、読み込みの流れ、文字コード（UTF-8 with BOM）の注意点をまとめる。<br />
+（Item版 / Enemy版と同じ構成。Player特有の差分は各章に記載）</p>
+<hr />
+<h2 id="section">1. 概要</h2>
+<h3 id="section-1">目的</h3>
+<ul>
+<li>Playerのパラメータを CSV で管理し、<strong>ビルド後も CSV を差し替えるだけで調整できる</strong>ようにする</li>
+<li>CSV が壊れていてもゲームが落ちないよう、<strong>Inspector値へフォールバック</strong>する</li>
+</ul>
+<h3 id="section-2">基本方針</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>方針</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>読み込みタイミング</td>
+<td><strong>実行時</strong>に CSV を読む</td>
+</tr>
+<tr>
+<td>置き場所</td>
+<td><code>Assets/StreamingAssets/player.csv</code></td>
+</tr>
+<tr>
+<td><strong>形式</strong></td>
+<td><strong>key-value形式（1行 = 1パラメータ）</strong> ← Item/Enemyと最大の違い</td>
+</tr>
+<tr>
+<td>CSVに入れるもの</td>
+<td>数値・bool・文字列（スカラー）</td>
+</tr>
+<tr>
+<td>CSVに入れないもの</td>
+<td>攻撃位置などのVector2オフセット、SE/Prefab/Layer などのアセット・シーン参照</td>
+</tr>
+<tr>
+<td>壊れたとき</td>
+<td>Inspector値を使って通常どおり動作する</td>
+</tr>
+</tbody>
+</table>
+<h3 id="key-value-itemenemy">なぜ key-value 形式なのか（Item/Enemyとの違い）</h3>
+<p>Item / Enemy は「<strong>複数の種類（行）</strong>」があるので「1行=1エンティティ」の表形式だった。<br />
+一方 <strong>Playerは1体だけ</strong>。同じ表形式にすると40項目超を横1行に並べることになり、Excelで激烈に見づらい。</p>
+<p>そこでPlayerは <strong>key-value形式</strong>（<code>key,value</code> の2列、1パラメータ=1行）を採用した。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Item / Enemy</th>
+<th>Player</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>エンティティ数</td>
+<td>複数（多数の行）</td>
+<td>1体のみ</td>
+</tr>
+<tr>
+<td>形式</td>
+<td>1行=1エンティティ（横に多列）</td>
+<td>1行=1パラメータ（縦に読む）</td>
+</tr>
+<tr>
+<td>キー</td>
+<td><code>id</code>（行を識別）</td>
+<td><code>key</code>（パラメータ名）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="itemenemy">実装方式（Item/Enemyとの違い）</h3>
+<p>Playerは Item と違い ScriptableObject ではなく、複数の MonoBehaviour（Controller/Combat/Health）で構成される。<br />
+MonoBehaviourは実行時のフィールド書き換えがアセットに永続化されないため、Enemyと同じく<br />
+<strong>Awake/Startで「値がある項目だけフィールドを上書き」</strong> する方式でフォールバックを実現している<br />
+（ItemDataのような「非シリアライズの第2の箱」は不要）。</p>
+<hr />
+<h2 id="utf-8-with-bom">2. 文字コード：UTF-8 with BOM（重要）</h2>
+<p>Item/Enemy版と同じ。<strong>必ず「UTF-8 with BOM」で保存すること。</strong></p>
+<ul>
+<li>テキストファイルに文字コードの情報は入っておらず、開く側が推測する</li>
+<li>日本語版ExcelはデフォルトでShift-JISと推測するため、BOMが無いUTF-8は文字化けする</li>
+<li><strong>BOM = ファイル先頭の3バイト <code>EF BB BF</code></strong>（見えない文字 U+FEFF）。「これはUTF-8」という目印</li>
+<li>プログラム側は読み込み時にBOMを除去する（<code>CsvLoader</code>が対応済み）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>目的</th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>付与（Excel）</td>
+<td>「CSV UTF-8(コンマ区切り)」で保存する</td>
+</tr>
+<tr>
+<td>付与（VSCode）</td>
+<td>ステータスバー → 「エンコード付きで保存」 → <code>UTF-8 with BOM</code></td>
+</tr>
+<tr>
+<td>確認（コマンド）</td>
+<td><code>file player.csv</code> → <code>(with BOM)</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="csv">3. CSVの書式ルール</h2>
+<table>
+<thead>
+<tr>
+<th>ルール</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>形式</td>
+<td>1行目を <code>key,value</code> のヘッダーにし、以降1行1パラメータ</td>
+</tr>
+<tr>
+<td>コメント行</td>
+<td>行頭が <code>#</code> の行は無視される（セクション区切りに使う）</td>
+</tr>
+<tr>
+<td>空行</td>
+<td>無視される</td>
+</tr>
+<tr>
+<td><strong>未指定</strong></td>
+<td>keyを書かない or value空欄 → <strong>その項目だけInspector値</strong>（フォールバック）</td>
+</tr>
+<tr>
+<td>bool値</td>
+<td><code>true/false</code> <code>1/0</code> <code>yes/no</code> <code>on/off</code>（Excelが書く <code>TRUE/FALSE</code> もそのまま読める）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="player.csv-1">4. player.csv 項目定義</h2>
+<h3 id="playercontroller">移動・ジャンプ（PlayerController）</h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>moveSpeed</code></td>
+<td>float</td>
+<td>移動速度</td>
+</tr>
+<tr>
+<td><code>jumpPower</code></td>
+<td>float</td>
+<td>ジャンプ力</td>
+</tr>
+<tr>
+<td><code>maxJumpCount</code></td>
+<td>int</td>
+<td>最大ジャンプ回数</td>
+</tr>
+<tr>
+<td><code>maxFallSpeed</code></td>
+<td>float</td>
+<td>落下速度上限</td>
+</tr>
+<tr>
+<td><code>startFacingRight</code></td>
+<td>bool</td>
+<td>開始時に右向きか</td>
+</tr>
+<tr>
+<td><code>groundCheckRadius</code></td>
+<td>float</td>
+<td>接地判定の半径</td>
+</tr>
+<tr>
+<td><code>attackMoveGroundCheckDistance</code></td>
+<td>float</td>
+<td>攻撃中移動の前方地面確認距離</td>
+</tr>
+</tbody>
+</table>
+<h3 id="playercontroller-1">被弾リアクション（PlayerController）</h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>knockbackSafetyTime</code></td>
+<td>float</td>
+<td>ノックバックStateのセーフティ解除時間</td>
+</tr>
+</tbody>
+</table>
+<h3 id="attack123playercombat">攻撃 Attack1/2/3（PlayerCombat）</h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attackDM</code></td>
+<td>int</td>
+<td>攻撃ダメージ（共通）</td>
+</tr>
+<tr>
+<td><code>attack1Radius</code> / <code>2</code> / <code>3</code></td>
+<td>float</td>
+<td>各コンボの攻撃範囲</td>
+</tr>
+<tr>
+<td><code>attack1LaunchPower</code> / <code>2</code> / <code>3</code></td>
+<td>float</td>
+<td>各コンボの打ち上げ力</td>
+</tr>
+<tr>
+<td><code>attack1Knockback</code> / <code>2</code> / <code>3</code></td>
+<td>float</td>
+<td>各コンボのノックバック</td>
+</tr>
+<tr>
+<td><code>attack1MoveDistance</code> / <code>2</code> / <code>3</code></td>
+<td>float</td>
+<td>各コンボの前進距離</td>
+</tr>
+<tr>
+<td><code>attack1EndLock</code> / <code>2</code> / <code>3</code></td>
+<td>float</td>
+<td>各コンボ後の硬直時間</td>
+</tr>
+</tbody>
+</table>
+<h3 id="playercombat">ジャンプ攻撃（PlayerCombat）</h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jumpAttackRadius</code></td>
+<td>float</td>
+<td>判定半径</td>
+</tr>
+<tr>
+<td><code>jumpAttackKnockback</code></td>
+<td>float</td>
+<td>ノックバック</td>
+</tr>
+<tr>
+<td><code>jumpAttackDamage</code></td>
+<td>int</td>
+<td>ダメージ</td>
+</tr>
+<tr>
+<td><code>jumpAttackStopTime</code></td>
+<td>float</td>
+<td>空中停止時間</td>
+</tr>
+<tr>
+<td><code>jumpAttackStunRate</code></td>
+<td>float</td>
+<td>スタン係数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hpplayerhealth">HP・被弾（PlayerHealth）</h3>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>型</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maxHP</code></td>
+<td>int</td>
+<td>最大HP</td>
+</tr>
+<tr>
+<td><code>invincibleTime</code></td>
+<td>float</td>
+<td>被弾後の無敵時間</td>
+</tr>
+<tr>
+<td><code>knockbackPower</code></td>
+<td>float</td>
+<td>ノックバック力</td>
+</tr>
+<tr>
+<td><code>knockbackDuration</code></td>
+<td>float</td>
+<td>ノックバック速度が乗る時間</td>
+</tr>
+<tr>
+<td><code>blinkInterval</code></td>
+<td>float</td>
+<td>無敵中の点滅間隔</td>
+</tr>
+<tr>
+<td><code>fallDeathY</code></td>
+<td>float</td>
+<td>この高さより下に落ちたら死亡</td>
+</tr>
+<tr>
+<td><code>deathKnockbackPower</code></td>
+<td>float</td>
+<td>死亡時の吹っ飛び力</td>
+</tr>
+<tr>
+<td><code>deathUpPower</code></td>
+<td>float</td>
+<td>死亡時の上方向の力</td>
+</tr>
+</tbody>
+</table>
+<h3 id="csvinspector">CSVで扱わない項目（Inspectorで設定）</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attack1〜3Offset</code> / <code>jumpAttackForwardOffset</code> / <code>jumpAttackDownOffset</code> (Vector2)</td>
+<td><strong>Gizmoを見ながら視覚調整する空間パラメータ</strong>のためInspectorに残す</td>
+</tr>
+<tr>
+<td><code>jumpSE</code> / 各攻撃SE / <code>projectileSE</code> / <code>recoverySE</code> (AudioClip)</td>
+<td>アセット参照</td>
+</tr>
+<tr>
+<td><code>groundCheck</code> / <code>footstepSource</code> など (Transform / Component)</td>
+<td>シーン参照</td>
+</tr>
+<tr>
+<td><code>groundLayer</code> / <code>enemyLayer</code> (LayerMask)</td>
+<td>Layer情報</td>
+</tr>
+<tr>
+<td>デバッグ用（<code>alwaysShowAttackGizmo</code> 等）</td>
+<td>調整対象でないため除外</td>
+</tr>
+</tbody>
+</table>
+<p>※ <code>PlayerItemAction</code> はCSV対象の数値項目を持たない（SE等アセットのみ）。</p>
+<hr />
+<h2 id="section-3">5. 読み込みの仕組み</h2>
+<h3 id="section-4">データの流れ</h3>
+<pre><code class="language-text">Assets/StreamingAssets/player.csv （key-value）
+        │  初回アクセス時に自動で読み込み
+        ▼
+CsvLoader          … 共通のファイル読み込み＋パース（Item/Enemyと同じものを流用）
+        ▼
+PlayerDatabase     … 各行の key列→value列 を辞書化し、PlayerStats を1つ作る
+        ▲
+        │  各コンポーネントが自分のkeyを引きに行く
+PlayerController / PlayerCombat / PlayerHealth
+        └─ Awake（Healthのみ Start）で ApplyCsvStats：値がある項目だけ上書き
+</code></pre>
+<h3 id="section-5">各コンポーネントの反映タイミング</h3>
+<table>
+<thead>
+<tr>
+<th>コンポーネント</th>
+<th>呼ぶ場所</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PlayerController</td>
+<td>Awake</td>
+<td>移動・ジャンプ・接地・knockbackSafetyTime</td>
+</tr>
+<tr>
+<td>PlayerCombat</td>
+<td>Awake</td>
+<td>Attack1/2/3・ジャンプ攻撃のスカラー</td>
+</tr>
+<tr>
+<td>PlayerHealth</td>
+<td><strong>Start（<code>currentHP = maxHP</code> の前）</strong></td>
+<td>maxHPをCSV値にしてからHP初期化する必要があるため</td>
+</tr>
+<tr>
+<td>PlayerItemAction</td>
+<td>（なし）</td>
+<td>CSV対象の数値なし</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="section-6">6. フォールバックの仕組み</h2>
+<h3 id="section-7">「値があれば上書き」の書き方</h3>
+<pre><code class="language-csharp">/* PlayerStats.GetFloat は float?（null許容）を返す */
+if (p.GetFloat(&quot;moveSpeed&quot;) is float ms) moveSpeed = ms;
+/*  ↑値がある → msに入りフィールド上書き / null（未指定）→ 何もしない＝Inspector値のまま */
+</code></pre>
+<p><code>PlayerStats</code> の getter は「未指定なら null」を返す。</p>
+<ul>
+<li>キーが無い / 値が空欄 → null（<strong>警告なし</strong>。未指定は通常運用のため）</li>
+<li>キーはあるが変換できない → null＋警告（データのミス）</li>
+</ul>
+<h3 id="section-8">動作パターン</h3>
+<table>
+<thead>
+<tr>
+<th>ケース</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSVに値がある</td>
+<td><strong>CSV値</strong>を使う</td>
+</tr>
+<tr>
+<td>CSVファイルが無い / 読み込み失敗</td>
+<td><strong>Inspector値</strong>（エラーログは出るが正常動作）</td>
+</tr>
+<tr>
+<td>そのkeyがCSVに無い</td>
+<td><strong>Inspector値</strong></td>
+</tr>
+<tr>
+<td>keyはあるが値が空欄</td>
+<td><strong>Inspector値</strong></td>
+</tr>
+<tr>
+<td>値が型変換できない</td>
+<td>警告を出して<strong>Inspector値</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="excel">7. Excel運用ルール</h2>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>手順</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開く</td>
+<td>ダブルクリックでOK（BOMがあるので化けない）</td>
+</tr>
+<tr>
+<td><strong>保存</strong></td>
+<td><strong>必ず「CSV UTF-8(コンマ区切り)」を選ぶ</strong></td>
+</tr>
+<tr>
+<td>セクション追加</td>
+<td><code>#</code> で始まる行を自由に足せる（パーサが無視する）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="section-9">8. パラメータを追加するときの手順</h2>
+<ol>
+<li>対象コンポーネントに <code>[SerializeField]</code> フィールドを追加（Inspector値＝フォールバック）</li>
+<li><code>player.csv</code> に <code>キー名,値</code> の行を追加（該当セクションのコメント下に置くと見やすい）</li>
+<li>そのコンポーネントの <code>ApplyCsvStats()</code> に1行追加<br />
+（例：<code>if (p.GetFloat(&quot;newParam&quot;) is float v) newParam = v;</code>）</li>
+</ol>
+<hr />
+<h2 id="section-10">9. 関連ファイル</h2>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Assets/StreamingAssets/player.csv</code></td>
+<td>Playerパラメータ本体（key-value）</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/CsvLoader.cs</code> / <code>CsvRow.cs</code></td>
+<td>CSV読み込み・パースの共通処理</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/PlayerStats.cs</code></td>
+<td>key→value の型付きアクセサ</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Data/PlayerDatabase.cs</code></td>
+<td>player.csvの読み込みと辞書管理</td>
+</tr>
+<tr>
+<td><code>Assets/Scripts/Player/PlayerController.cs</code> / <code>PlayerCombat.cs</code> / <code>PlayerHealth.cs</code></td>
+<td>Awake/StartでフィールドへCSV値を上書き</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<script>
+// 指定したタブ名に対応するサイドバー・タブボタンだけを active にし、他は非表示/非アクティブにする
+// （段落が1つも無いタブをクリックした場合の、サイドバー表示切り替えのみのフォールバック用）
+function showTab(name) {
+  document.querySelectorAll('.sidebar-list').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+  document.querySelectorAll('.tab-button').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+}
+// 各タブボタンのクリックで、そのタブの最初の段落ページへ実際に遷移する。
+// これにより、サイドバーの表示だけでなく右側の本文も正しく切り替わる。
+document.querySelectorAll('.tab-button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var firstPage = btn.getAttribute('data-first-page');
+    if (firstPage) {
+      window.location.href = firstPage;
+    } else {
+      showTab(btn.getAttribute('data-tab'));
+    }
+  });
+});
+</script>
+<script>
+document.querySelectorAll('pre').forEach(function (preEl) {
+  var codeEl = preEl.querySelector('code');
+  if (!codeEl) return;
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'code-copy-button';
+  btn.textContent = 'コピー';
+  btn.addEventListener('click', function () {
+    copyTextToClipboard(codeEl.textContent, btn);
+  });
+  preEl.appendChild(btn);
+});
+
+function copyTextToClipboard(text, btn) {
+  function showCopied() {
+    btn.textContent = 'コピーしました';
+    setTimeout(function () { btn.textContent = 'コピー'; }, 1500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+      fallbackCopyToClipboard(text, showCopied);
+    });
+  } else {
+    fallbackCopyToClipboard(text, showCopied);
+  }
+}
+
+function fallbackCopyToClipboard(text, onSuccess) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    onSuccess();
+  } catch (e) {
+    // コピーに失敗した場合は何もしない
+  }
+  document.body.removeChild(textarea);
+}
+</script>
+</body>
+</html>

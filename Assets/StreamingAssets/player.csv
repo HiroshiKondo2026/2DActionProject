@@ -1,0 +1,48 @@
+﻿# Playerデータ（key-value形式：1行 = 1パラメータ）,
+# 空欄/未記載のkeyは、その項目だけPlayerの各コンポーネントのInspector値が使われる,
+# 攻撃位置などのVector2オフセット、SE/Prefab/Layerなどはここでは扱わずInspectorで設定する,
+# UTF-8 with BOM。Excelでは「CSV UTF-8(コンマ区切り)」で保存すること,
+key,value
+# --- 移動・ジャンプ（PlayerController）---,
+moveSpeed,7
+jumpPower,20
+maxJumpCount,2
+maxFallSpeed,10
+startFacingRight,TRUE
+groundCheckRadius,0.2
+attackMoveGroundCheckDistance,0.6
+# --- 被弾リアクション（PlayerController）---,
+knockbackSafetyTime,2
+# --- 攻撃 Attack1/2/3（PlayerCombat）---,
+attackDM,3
+attack1Radius,1.4
+attack2Radius,2.5
+attack3Radius,1.8
+attack1LaunchPower,9
+attack2LaunchPower,5
+attack3LaunchPower,1
+attack1Knockback,1.1
+attack2Knockback,1.5
+attack3Knockback,10
+attack1MoveDistance,0.55
+attack2MoveDistance,0.55
+attack3MoveDistance,0.275
+attack1EndLock,0.25
+attack2EndLock,0.2
+attack3EndLock,0.2
+# --- ジャンプ攻撃（PlayerCombat）---,
+jumpAttackRadius,0.7
+jumpAttackKnockback,12
+jumpAttackDamage,5
+jumpAttackStopTime,0.3
+jumpAttackStunRate,1.5
+# --- HP・被弾（PlayerHealth）---,
+maxHP,100
+invincibleTime,1
+knockbackPower,10
+knockbackDuration,0.2
+blinkInterval,0.05
+fallDeathY,-10
+deathKnockbackPower,8
+deathUpPower,3
+,

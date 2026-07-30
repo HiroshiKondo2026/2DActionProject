@@ -215,6 +215,46 @@ public class PlayerCombat : MonoBehaviour
     {
         // コーディネーター取得
         player = GetComponent<PlayerController>();
+
+        // CSVデータを反映
+        ApplyCsvStats();
+    }
+
+    // player.csv の値を各フィールドへ反映する。
+    // CSVに値がある項目だけ上書きし、無い項目はInspector値のまま残す（フォールバック）。
+    // ※攻撃位置(Vector2オフセット)は空間パラメータのためCSV対象外（Inspectorで調整）
+    private void ApplyCsvStats()
+    {
+        PlayerStats p = PlayerDatabase.Get();
+        if (p == null) return;
+
+        if (p.GetInt("attackDM") is int dm) attackDM = dm;
+
+        if (p.GetFloat("attack1Radius") is float a1r) attack1Radius = a1r;
+        if (p.GetFloat("attack2Radius") is float a2r) attack2Radius = a2r;
+        if (p.GetFloat("attack3Radius") is float a3r) attack3Radius = a3r;
+
+        if (p.GetFloat("attack1LaunchPower") is float a1l) attack1LaunchPower = a1l;
+        if (p.GetFloat("attack2LaunchPower") is float a2l) attack2LaunchPower = a2l;
+        if (p.GetFloat("attack3LaunchPower") is float a3l) attack3LaunchPower = a3l;
+
+        if (p.GetFloat("attack1Knockback") is float a1k) attack1Knockback = a1k;
+        if (p.GetFloat("attack2Knockback") is float a2k) attack2Knockback = a2k;
+        if (p.GetFloat("attack3Knockback") is float a3k) attack3Knockback = a3k;
+
+        if (p.GetFloat("attack1MoveDistance") is float a1m) attack1MoveDistance = a1m;
+        if (p.GetFloat("attack2MoveDistance") is float a2m) attack2MoveDistance = a2m;
+        if (p.GetFloat("attack3MoveDistance") is float a3m) attack3MoveDistance = a3m;
+
+        if (p.GetFloat("attack1EndLock") is float a1e) attack1EndLock = a1e;
+        if (p.GetFloat("attack2EndLock") is float a2e) attack2EndLock = a2e;
+        if (p.GetFloat("attack3EndLock") is float a3e) attack3EndLock = a3e;
+
+        if (p.GetFloat("jumpAttackRadius") is float jar) jumpAttackRadius = jar;
+        if (p.GetFloat("jumpAttackKnockback") is float jak) jumpAttackKnockback = jak;
+        if (p.GetInt("jumpAttackDamage") is int jad) jumpAttackDamage = jad;
+        if (p.GetFloat("jumpAttackStopTime") is float jas) jumpAttackStopTime = jas;
+        if (p.GetFloat("jumpAttackStunRate") is float jsr) jumpAttackStunRate = jsr;
     }
 
     //==============================

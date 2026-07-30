@@ -93,9 +93,29 @@ public class PlayerHealth : MonoBehaviour
     [Tooltip("ガード成功時のSE")]
     [SerializeField] private AudioClip guardSE;
 
+    // player.csv の値を各フィールドへ反映する。
+    // CSVに値がある項目だけ上書きし、無い項目はInspector値のまま残す（フォールバック）。
+    private void ApplyCsvStats()
+    {
+        PlayerStats p = PlayerDatabase.Get();
+        if (p == null) return;
+
+        if (p.GetInt("maxHP") is int hp) maxHP = hp;
+        if (p.GetFloat("invincibleTime") is float it) invincibleTime = it;
+        if (p.GetFloat("knockbackPower") is float kp) knockbackPower = kp;
+        if (p.GetFloat("knockbackDuration") is float kd) knockbackDuration = kd;
+        if (p.GetFloat("blinkInterval") is float bi) blinkInterval = bi;
+        if (p.GetFloat("fallDeathY") is float fd) fallDeathY = fd;
+        if (p.GetFloat("deathKnockbackPower") is float dkp) deathKnockbackPower = dkp;
+        if (p.GetFloat("deathUpPower") is float dup) deathUpPower = dup;
+    }
+
     // ゲーム開始時に呼ばれる
     private void Start()
     {
+        // CSVデータを反映（currentHP初期化より前に行い、maxHPをCSV値にしておく）
+        ApplyCsvStats();
+
         // HP初期化
         currentHP = maxHP;
 

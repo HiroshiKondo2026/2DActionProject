@@ -244,6 +244,26 @@ public class PlayerController : MonoBehaviour
         afterimageSpawner = GetComponent<AfterimageSpawner>();
         itemAction = GetComponent<PlayerItemAction>();
         combat = GetComponent<PlayerCombat>();
+
+        // CSVデータを反映
+        ApplyCsvStats();
+    }
+
+    // player.csv の値を各フィールドへ反映する。
+    // CSVに値がある項目だけ上書きし、無い項目はInspector値のまま残す（フォールバック）。
+    private void ApplyCsvStats()
+    {
+        PlayerStats p = PlayerDatabase.Get();
+        if (p == null) return;
+
+        if (p.GetFloat("moveSpeed") is float ms) moveSpeed = ms;
+        if (p.GetFloat("jumpPower") is float jp) jumpPower = jp;
+        if (p.GetInt("maxJumpCount") is int mjc) maxJumpCount = mjc;
+        if (p.GetFloat("maxFallSpeed") is float mfs) maxFallSpeed = mfs;
+        if (p.GetBool("startFacingRight") is bool sfr) startFacingRight = sfr;
+        if (p.GetFloat("groundCheckRadius") is float gcr) groundCheckRadius = gcr;
+        if (p.GetFloat("attackMoveGroundCheckDistance") is float amg) attackMoveGroundCheckDistance = amg;
+        if (p.GetFloat("knockbackSafetyTime") is float kst) knockbackSafetyTime = kst;
     }
 
     private void Start()
