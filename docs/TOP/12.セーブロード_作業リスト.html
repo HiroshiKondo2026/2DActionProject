@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>12.セーブロード_作業リスト</title>
+<style>
+body { margin:0; font-family: 'Yu Gothic UI', 'Meiryo', sans-serif; background:#ffffff; color:#000000; }
+/* 画面上部の帯。全タブ分のボタン(.tab-button)を横並びで表示する */
+.tabbar { background:#2d2d30; padding:8px 8px 0 8px; }
+.tab-button { margin-right:4px; padding:8px 14px; border:none; border-radius:4px 4px 0 0; cursor:pointer; background:#555; color:#fff; font-size:14px; }
+/* 現在選択中のタブのボタンだけ色を変えて強調する。JSのshowTab()がこのクラスを付け外しする */
+.tab-button.active { background:#007acc; }
+/* サイドバーと本文を横並びにする2カラムレイアウト */
+.layout { display:flex; align-items:flex-start; }
+.sidebar { width:220px; flex-shrink:0; border-right:1px solid #ddd; box-sizing:border-box; min-height:100vh; }
+/* 各タブ分のリンク一覧(div)。既定では全て非表示にし、.active が付いているものだけを表示する。
+   これにより「全タブ分のサイドバーを埋め込みつつ、見た目には1つしか出さない」を実現している。
+   paddingとmin-heightをこちら側に持たせることで、タブごとの背景色(インラインスタイル)が
+   サイドバー全体を隙間なく塗りつぶすようにしている */
+.sidebar-list { display:none; padding:12px; box-sizing:border-box; color:#333; }
+.sidebar-list.active { display:block; min-height:100vh; }
+/* リンクの文字色は親(.sidebar-list)の色を継承する。タブごとのインラインスタイルで
+   color を指定した場合、それがそのままリンクの文字色にも反映されるようにするため */
+.sidebar-list a { display:block; padding:6px 4px; color:inherit; text-decoration:none; border-radius:4px; }
+.sidebar-list a:hover { background:rgba(128,128,128,0.15); }
+/* 「今まさに見ているこのページ」へのリンクを、現在地としてハイライトする */
+.sidebar-list a.current { font-weight:bold; color:#007acc; background:#eaf4fc; }
+.content { flex:1; padding:24px; min-width:0; }
+/* 画像がコンテンツ幅からはみ出さないよう自動縮小する（プレビュー/単体HTML出力と同じ考え方） */
+.content img { max-width:100%; height:auto; }
+/* テーブルに罫線を付ける（プレビュー/単体HTML出力と同じ考え方） */
+.content table { border-collapse: collapse; }
+.content th, .content td { border: 1px solid #999; padding: 4px 8px; }
+.content th { background-color: #f0f0f0; }
+pre { position: relative; background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 14px 12px; overflow-x: auto; } pre code { background: none; border: none; padding: 0; font-family: Consolas, 'Courier New', monospace; font-size: 13px; line-height: 1.5; white-space: pre; } code { font-family: Consolas, 'Courier New', monospace; } :not(pre) > code { background-color: rgba(128,128,128,0.15); padding: 2px 5px; border-radius: 4px; font-size: 0.9em; } .code-copy-button { position: absolute; top: 6px; right: 6px; padding: 2px 8px; font-size: 12px; border: 1px solid #d0d7de; border-radius: 4px; background-color: #ffffff; color: #333333; cursor: pointer; opacity: 0.85; } .code-copy-button:hover { opacity: 1; }</style>
+</head>
+<body>
+<div class="tabbar"><button type="button" data-tab="TOP" data-first-page="../TOP/1.%E6%A6%82%E8%A6%81.html" class="tab-button active">TOP</button><button type="button" data-tab="01_基本仕様" data-first-page="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="tab-button">01_基本仕様</button><button type="button" data-tab="02_イベント" data-first-page="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="tab-button">02_イベント</button><button type="button" data-tab="03_Player" data-first-page="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="tab-button">03_Player</button><button type="button" data-tab="04_Stage" data-first-page="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="tab-button">04_Stage</button><button type="button" data-tab="05_Enemy" data-first-page="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="tab-button">05_Enemy</button><button type="button" data-tab="06_Menu" data-first-page="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="tab-button">06_Menu</button><button type="button" data-tab="07_Item" data-first-page="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="tab-button">07_Item</button><button type="button" data-tab="08_BGM,SE" data-first-page="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="tab-button">08_BGM,SE</button><button type="button" data-tab="09_その他1" data-first-page="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="tab-button">09_その他1</button><button type="button" data-tab="99_その他2" data-first-page="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="tab-button">99_その他2</button></div>
+<div class="layout">
+<div class="sidebar"><div class="sidebar-list active" data-tab="TOP"><a href="../TOP/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../TOP/10.player.csv.html" class="">10.player.csv</a><a href="../TOP/11.csv%E3%83%87%E3%83%BC%E3%82%BF%E3%83%AD%E3%83%BC%E3%83%89%E4%BB%95%E6%A7%98.html" class="">11.csvデータロード仕様</a><a href="../TOP/12.%E3%82%BB%E3%83%BC%E3%83%96%E3%83%AD%E3%83%BC%E3%83%89_%E4%BD%9C%E6%A5%AD%E3%83%AA%E3%82%B9%E3%83%88.html" class="current">12.セーブロード_作業リスト</a><a href="../TOP/2.%E4%BD%9C%E6%A5%AD%E3%83%AA%E3%82%B9%E3%83%88%28%E3%83%A1%E3%83%A2%29.html" class="">2.作業リスト(メモ)</a><a href="../TOP/3.%E4%BD%9C%E6%A5%AD%E5%84%AA%E5%85%88%E5%BA%A6.html" class="">3.作業優先度</a><a href="../TOP/4.PlayerController%E3%83%AA%E3%83%95%E3%82%A1%E3%82%AF%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0.html" class="">4.PlayerControllerリファクタリング</a><a href="../TOP/5.PlayerCombat.html" class="">5.PlayerCombat</a><a href="../TOP/6.PlayerController%E6%A9%9F%E8%83%BD%E5%88%86%E5%89%B2%E4%BB%95%E4%B8%8A%E3%81%92.html" class="">6.PlayerController機能分割仕上げ</a><a href="../TOP/7.%E5%A4%96%E9%83%A8%E3%83%87%E3%83%BC%E3%82%BF%E5%8F%82%E7%85%A7.html" class="">7.外部データ参照</a><a href="../TOP/8.Item.csv.html" class="">8.Item.csv</a><a href="../TOP/9.enemy.csv.html" class="">9.enemy.csv</a></div><div class="sidebar-list" data-tab="01_基本仕様"><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/2.%E6%96%B9%E9%87%9D.html" class="">2.方針</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/3.Scene%E3%83%95%E3%83%AD%E3%83%BC.html" class="">3.Sceneフロー</a><a href="../01_%E5%9F%BA%E6%9C%AC%E4%BB%95%E6%A7%98/4.%E6%93%8D%E4%BD%9C.html" class="">4.操作</a></div><div class="sidebar-list" data-tab="02_イベント"><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/2.%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E4%BB%95%E6%A7%98.html" class="">2.イベント仕様</a><a href="../02_%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/3.TxtData%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88.html" class="">3.TxtDataフォーマット</a></div><div class="sidebar-list" data-tab="03_Player"><a href="../03_Player/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="04_Stage"><a href="../04_Stage/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="05_Enemy"><a href="../05_Enemy/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="06_Menu"><a href="../06_Menu/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="07_Item"><a href="../07_Item/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="08_BGM,SE"><a href="../08_BGM%2CSE/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="09_その他1"><a href="../09_%E3%81%9D%E3%81%AE%E4%BB%961/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div><div class="sidebar-list" data-tab="99_その他2"><a href="../99_%E3%81%9D%E3%81%AE%E4%BB%962/1.%E6%A6%82%E8%A6%81.html" class="">1.概要</a></div></div>
+<div class="content"><h1 id="section">セーブ/ロード 作業リスト</h1>
+<p>Phase D（セーブ/ロード）の実装タスク。上から順に進めるのが安全（土台 → 機能 → UI連携）。<br />
+凡例： 💻=コード実装（担当:AI） / 🎮=Unity側作業（担当:あなた） / ✅=完了チェック</p>
+<hr />
+<h2 id="section-1">確定した仕様（前提）</h2>
+<ul>
+<li>セーブ内容：<strong>進行状況のみ</strong>（現在HP / 最大HP / シーン名 / 所持品 / 装備 / <strong>撃破済みEnemyID</strong> / timestamp）。CSV調整値は保存しない</li>
+<li>スロット：2つ（オートセーブ用 / 通常セーブ用）</li>
+<li>LoadGame：<strong>オート/通常を選ばせる</strong>（LoadGame → スロット選択 → ロード実行）</li>
+<li>オートセーブ発火：<strong><code>AutoSaveOnEnter</code> を置いたシーンの入場時のみ</strong>（Stage*-1系・Title・GameOverには置かない）</li>
+<li>ロード粒度：シーン境界（頭からロード ＋ 保存HP/所持品で開始）</li>
+<li><strong>Enemy永続化</strong>：撃破済みEnemyはロード時に復活させない。生き残りだけフルHPで再配置（farming防止）</li>
+</ul>
+<hr />
+<h2 id="step-1.io">STEP 1. 土台（データとファイルI/O）</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 1-1. <code>SaveData</code> 構造体を作る（JSON化用：hp / maxHp / sceneName / items[{id,count}] / equippedId / <strong>defeatedEnemyIds[]</strong> / timestamp）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 1-2. <code>SaveSystem</code> を作る（persistentDataPath への JSON 読み書き、スロット別、存在判定、timestamp取得）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 1-3. <code>PlayerHealth</code> に「現在HP / 最大HP」取得の口を追加（生きた値でセーブするため）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 1-4. <code>InventoryManager</code> に「現在の所持品 / 装備」取得の口を確認・整備（既存で足りるか確認）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 1-5. 動作確認：デバッグから <code>SaveSystem.Save</code> → persistentDataPath に JSON が出力されるか</li>
+</ul>
+<h2 id="step-2">STEP 2. セーブ処理（データ収集 → 書き出し）</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2-1. <code>SaveManager</code>（または既存Managerに機能追加）で「現在の生きた状態を集めて SaveData を作る」処理</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2-2. オート/通常の2スロットへの Save メソッド</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2-3. <code>AutoSaveOnEnter</code> コンポーネント（シーン入場時にオートスロットへ Save）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 2-4. セーブ点シーンに <code>AutoSaveOnEnter</code> を配置（Stage1_2 / Stage1_3 / イベントシーン等。Stage*-1・Title・GameOverには置かない）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 2-5. 動作確認：セーブ点シーンに入る → オートスロットの JSON が更新される</li>
+</ul>
+<h2 id="step-2.5.enemyfarming">STEP 2.5. Enemy撃破の永続化（farming防止）</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2.5-1. <code>SaveableEnemy</code> コンポーネント（個体GUID。<code>OnValidate</code>で空なら自動生成し、シーン配置ごとに一意化）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2.5-2. 撃破トラッカー：Enemy撃破時に、そのGUIDを「現在シーンの撃破済みセット」へ記録</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2.5-3. セーブ時：撃破済みセットを <code>SaveData.defeatedEnemyIds</code> に収集</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 2.5-4. ロード時：シーン読み込み後、撃破済みIDのEnemyを消す（生き残りはフルHPのまま）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 2.5-5. 各Enemyプレハブに <code>SaveableEnemy</code> を付与（シーン配置インスタンスごとにGUIDが振られるか確認）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 2.5-6. 動作確認：敵を倒す → 手動セーブ → ロード → 倒した敵は復活せず、生き残りはフルHP。ドロップ増殖ができないこと</li>
+</ul>
+<h2 id="step-3">STEP 3. ロード処理（読み出し → 復元 → 遷移）</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 3-1. <code>FadeController</code> に FadeOut（透明→黒）を追加、またはロード用の遷移メソッドを用意</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 3-2. ロード処理：SaveData 読み出し → <code>GameData</code> へ流し込み → FadeOut → シーンロード → FadeIn</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 3-3. ロード時、所持品は <code>ItemAssetDatabase</code> で id→ItemData に解決して復元</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 3-4. 動作確認：デバッグからロード実行 → 保存シーンが頭から始まり、HP/所持品が復元される</li>
+</ul>
+<h2 id="step-4.uinewgame-loadgame">STEP 4. タイトル画面のUI（NewGame / LoadGame）</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 4-1. Title に NewGame / LoadGame の縦並び選択UI（Text ＋ 選択マーカー）を配置</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 4-2. LoadGame後の「オート / 通常」スロット選択UIを配置</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 4-3. <code>TitleManager</code>（または新規）に選択UI制御：上下キー切替 → 決定 → startSE → ロード実行</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 4-4. NewGame：<code>GameData.ResetData()</code> → 通常開始（既存フロー流用）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 4-5. セーブが存在しないときの LoadGame の扱い（非活性/非表示）を決めて反映</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 4-6. 動作確認：Title → LoadGame → スロット選択 → 保存地点から再開</li>
+</ul>
+<h2 id="step-5.uisave-load">STEP 5. メニュー画面のUI（Save / Load）</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 5-1. Menu に Save / Load のUI項目を追加</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 5-2. <code>InventoryMenuUI</code> の <code>MenuState</code> に Save/Load 用の状態を追加</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 5-3. Save：決定 → 既存 <code>ConfirmationPopupUI</code>（はい/いいえ）→ はいで通常スロットへ上書き</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 5-4. Load：決定 → オート/通常スロット選択 → ロード実行（STEP3の遷移を呼ぶ）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 5-5. 確認ポップアップ（はい/いいえ）を Save/Menu から参照できるよう配線</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 5-6. 動作確認：メニューから Save → 通常スロット更新 / メニューから Load → 再開</li>
+</ul>
+<h2 id="step-6">STEP 6. 仕上げ・例外対応</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 6-1. セーブファイルが壊れている/バージョン不一致のときの安全処理（読めなければ NewGame 相当に倒す）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 💻 6-2. 解決できない itemId（アイテム削除等）がセーブにある場合のフォールバック（その項目をスキップ＋警告）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 🎮 6-3. GameData が Title 起動直後に存在するか確認（無ければ SaveSystem 単独で成立する設計になっているか確認）</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> ✅ 6-4. 通し確認：NewGame → 進行 → オートセーブ → 手動セーブ → タイトル/メニューからロード → 復元</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> 📄 6-5. セーブ/ロード仕様書（md）を出力</li>
+</ul>
+<hr />
+<h2 id="section-2">メモ・懸念（進行中に埋めていく）</h2>
+<ul>
+<li>LoadGame のスロット選択UIは Title と Menu で共通化できると管理が楽</li>
+<li>「初めて入ったときの状態」＝敵状態・座標は保存しない（シーンを頭からロード）方針</li>
+<li>timestamp は表示にも使える（「オート: 12:34 / 通常: 昨日」等）が、まずは内部比較用でよい</li>
+</ul>
+</div>
+</div>
+<script>
+// 指定したタブ名に対応するサイドバー・タブボタンだけを active にし、他は非表示/非アクティブにする
+// （段落が1つも無いタブをクリックした場合の、サイドバー表示切り替えのみのフォールバック用）
+function showTab(name) {
+  document.querySelectorAll('.sidebar-list').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+  document.querySelectorAll('.tab-button').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-tab') === name); });
+}
+// 各タブボタンのクリックで、そのタブの最初の段落ページへ実際に遷移する。
+// これにより、サイドバーの表示だけでなく右側の本文も正しく切り替わる。
+document.querySelectorAll('.tab-button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var firstPage = btn.getAttribute('data-first-page');
+    if (firstPage) {
+      window.location.href = firstPage;
+    } else {
+      showTab(btn.getAttribute('data-tab'));
+    }
+  });
+});
+</script>
+<script>
+document.querySelectorAll('pre').forEach(function (preEl) {
+  var codeEl = preEl.querySelector('code');
+  if (!codeEl) return;
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'code-copy-button';
+  btn.textContent = 'コピー';
+  btn.addEventListener('click', function () {
+    copyTextToClipboard(codeEl.textContent, btn);
+  });
+  preEl.appendChild(btn);
+});
+
+function copyTextToClipboard(text, btn) {
+  function showCopied() {
+    btn.textContent = 'コピーしました';
+    setTimeout(function () { btn.textContent = 'コピー'; }, 1500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+      fallbackCopyToClipboard(text, showCopied);
+    });
+  } else {
+    fallbackCopyToClipboard(text, showCopied);
+  }
+}
+
+function fallbackCopyToClipboard(text, onSuccess) {
+  var textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    onSuccess();
+  } catch (e) {
+    // コピーに失敗した場合は何もしない
+  }
+  document.body.removeChild(textarea);
+}
+</script>
+</body>
+</html>
