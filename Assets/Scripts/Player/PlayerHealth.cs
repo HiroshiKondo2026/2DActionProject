@@ -13,6 +13,12 @@ public class PlayerHealth : MonoBehaviour
     // 現在HP
     private int currentHP;
 
+    /// <summary>現在HP（セーブ時に生きた値を取得するため公開）</summary>
+    public int CurrentHP => currentHP;
+
+    /// <summary>最大HP（セーブ用）</summary>
+    public int MaxHP => maxHP;
+
     // 無敵状態の有無
     private bool isInvincible = false;
 
